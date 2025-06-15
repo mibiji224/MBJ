@@ -1,0 +1,6 @@
+This page will serve as a temporary text pad for notes.
+
+Use MERN 
+
+Learn MongoDB, Express.js, React, and Node.js
+
