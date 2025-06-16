@@ -16,6 +16,14 @@
   font-family: "Poppins", sans-serif;
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+  color: var(--main-color);
+}
+
+
+
 html {
   font-size: 60%;
   overflow-x: hidden;
@@ -94,7 +102,18 @@ section {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 15rem;
+  gap: 7rem;
+}
+
+.home-text {
+  display: flex;
+  text-align: justify;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 2.5rem;
+
 }
 
 .home-content {
@@ -125,14 +144,12 @@ section {
   max-width: 1000px;
 }
 
-.home-image {
-  border-radius: 50%;
-}
+
 
 .home-image img {
   position: relative;
-  top: 3rem;
-  width: 32vw;
+  top: 1rem;
+  width: 30rem;
   border-radius: 50%;
   box-shadow: 0 0 25px var(--main-color);
   cursor: pointer;
@@ -141,8 +158,8 @@ section {
 
 .home-image img:hover {
   box-shadow: 0 0 25px var(--main-color),
-              0 0 50px var(--main-color),
-              0 0 100px var(--main-color);
+    0 0 50px var(--main-color),
+    0 0 100px var(--main-color);
 }
 
 span {
@@ -178,7 +195,7 @@ span {
   padding: 1rem 2.8rem;
   margin-top: 2rem;
   background: var(--main-color);
-  box-shadow: 0 0 25px var(--main-color);
+  /*box-shadow: 0 0 25px var(--main-color);*/
   border-radius: 4rem;
   font-size: 1.6rem;
   color: black;
@@ -350,9 +367,10 @@ span {
 }
 
 .custom-footer {
-  /*background-color: #1f2937; /* Tailwind's bg-gray-800 */
+  /* background-color: #1f2937;  Tailwind's bg-gray-800 */
   color: white;
-  padding: 1rem 0; /* Tailwind's py-4 */
+  padding: 1rem 0;
+  /* Tailwind's py-4 */
   position: fixed;
   bottom: 0;
   width: 100%;
@@ -362,57 +380,121 @@ span {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 1.4rem; /* Tailwind's text-sm */
+  font-size: 1.4rem;
+  /* Tailwind's text-sm */
 }
 
 /* ===== ANIMATIONS ===== */
 
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== IMPROVED TEXT ANIMATION ===== */
+.text-animation {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+
+.text-animation .static-text {
+  font-size: 3.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+  margin-top: 0.4rem;
+}
+
 .text-wrapper {
   position: relative;
-  height: 3.5rem; /* increased slightly to fit the text */
-  overflow: hidden;
-  margin-bottom: 1rem;
+  width: fit-content;
+  height: 3.5rem; /* match static-text height */
+ 
 }
 
-.text-wrapper .box {
-  position: flex-box;
-  width: 100%;
-  text-align: left;
+
+.text-animation .box {
+  position: flex;
+  top: 0;
+  left: 0;
   opacity: 0;
-  animation: fadeText 9s infinite;
-  font-size: 2rem; /* You can adjust based on design */
-  font-weight: 600;
+  white-space: nowrap;
+  transform: translateY(100%) scale(0.95) skewY(4deg);
+  filter: blur(4px);
+  animation: fadeSlideEnhanced 9s infinite;
+  text-shadow: 0 0 8px var(--main-color), 0 0 16px var(--main-color);
+  transition: all 0.3s ease;
 }
 
-.text-wrapper .b1 {
+.text-animation .box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(100%) scale(0.95) skewY(4deg);
+  filter: blur(4px);
+  animation: fadeSlideEnhanced 9s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+  transition: filter 0.3s, transform 0.3s;
+}
+
+.text-animation .box.active,
+.text-animation .box:hover {
+  filter: blur(0);
+  transform: translateY(0) scale(1.05) skewY(0deg);
+}
+
+.text-animation .b1 {
   animation-delay: 0s;
 }
-.text-wrapper .b2 {
+
+.text-animation .b2 {
   animation-delay: 3s;
 }
-.text-wrapper .b3 {
+
+.text-animation .b3 {
   animation-delay: 6s;
 }
 
-@keyframes fadeText {
-  0% {
-    opacity: 0;
-    transform: translateY(100%);
-  }
-  10% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  30% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  40% {
-    opacity: 1;
-    transform: translateY(-100%);
-  }
+@keyframes fadeSlideEnhanced {
+
+  0%,
   100% {
     opacity: 0;
-    transform: translateY(-100%);
+    transform: translateY(100%) scale(0.95) skewY(4deg);
+    filter: blur(4px);
   }
+
+  8% {
+    opacity: 1;
+    transform: translateY(0) scale(1.05) skewY(0deg);
+    filter: blur(0);
+  }
+
+  30% {
+    opacity: 1;
+    transform: translateY(0) scale(1.05) skewY(0deg);
+    filter: blur(0);
+  }
+
+  38% {
+    opacity: 0;
+    transform: translateY(-100%) scale(0.95) skewY(-4deg);
+    filter: blur(4px);
+  }
+
+  90% {
+    opacity: 0;
+    transform: translateY(-100%) scale(0.95) skewY(-4deg);
+    filter: blur(4px);
+  }
+}
+
+/* Optional: Add a subtle glowing effect to the animated text */
+.text-animation .box {
+  text-shadow: 0 0 8px var(--main-color), 0 0 16px var(--main-color);
 }

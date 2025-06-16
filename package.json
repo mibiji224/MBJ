@@ -17,5 +17,10 @@
   "bugs": {
     "url": "https://github.com/mibiji224/MBJ/issues"
   },
-  "homepage": "https://github.com/mibiji224/MBJ#readme"
+  "homepage": "https://github.com/mibiji224/MBJ#readme",
+  "devDependencies": {
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.5",
+    "tailwindcss": "^4.1.10"
+  }
 }
