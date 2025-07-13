@@ -15,9 +15,9 @@ function Head() {
         </style>
         <nav class="navbar">
             <a href="#home">Home</a>
-            <a href="#info">Info</a>
-            <a href="#gallery">Gallery</a>
+            <a href="#about">About</a>
             <a href="#proj">Projects</a>
+            <a href="#contactme">Connect</a>
         </nav>
     </header> 
     );

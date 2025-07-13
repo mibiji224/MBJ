@@ -498,3 +498,25 @@ span {
 .text-animation .box {
   text-shadow: 0 0 8px var(--main-color), 0 0 16px var(--main-color);
 }
+
+.exp_timeline {
+  font-size: 1.8rem;;
+  position: relative;
+  padding-left: 2rem;
+  margin-left: 2rem;
+  border-left: 2px solid var(--main-color);
+}
+
+.timeline {
+  margin-top: 1rem;
+}
+
+.timeline li {
+  position: relative;
+  margin-bottom: 0.9rem;
+  list-style: none;
+  }
+  
+.timeline li span {
+    font-weight: bolder;
+  }
