@@ -69,6 +69,44 @@ function Home() {
                             <li>
                                 <span>Operation Block Committee Member</span> - Junior Blockchain Consortium of the Philippines - UM Chapter (2024)
                             </li>
+                            <li>
+                                <span>Secretary</span> - College of Computing Education Student Government (2023-2024)
+                            </li>
+                            <li>
+                                <span>Assistant Secretary</span> - Philippine Society of Information Technology Students Region XI (2023-2024)
+                            </li>
+                            <li>
+                                <span>Publication and Documentation Head</span> - Girl Up Davao (2023)
+                            </li>
+                            <li>
+                                <span>Delegate</span> - United Nations Girl Up Southeast Asia STEAM and Leadership Training Camp (2022)
+                            </li>
+                            <li>
+                                <span>Digital Artist</span> - Freelance (2020-2023)
+                            </li>
+                            <li>
+                                <span>Personal Assistant</span> - English Academic High School Teacher (2020-2021)
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="certifications">
+                        <h1>CERTIFICATIONS</h1>
+                        <ul className="certification-list">
+                            <li>
+                                <span>Google Project Management: Professional Certificate</span> - Coursera (2024)
+                            </li>
+                            <li>
+                                <span>Google UX Design: Professional Certificate</span> - Coursera (2024)
+                            </li>
+                            <li>
+                                <span>Introduction to Cybersecurity Tools & Cyber Attacks</span> - Coursera (2024)
+                            </li>
+                            <li>
+                                <span>Introduction to Cybersecurity</span> - Coursera (2024)
+                            </li>
+                            <li>
+                                <span>Introduction to Cybersecurity Tools & Cyber Attacks</span> - Coursera (2024)
+                            </li>
                         </ul>
                     </div>
                 </div>
