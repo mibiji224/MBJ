@@ -1,8 +1,8 @@
 :root {
-  --bg-color: #080808;
+  --bg-color: #080707;
   --second-bg-color: #131313;
   --text-color: white;
-  --main-color: #f50000;
+  --main-color: #db0a0a;
 }
 
 * {
@@ -412,8 +412,9 @@ span {
 .text-wrapper {
   position: relative;
   width: fit-content;
-  height: 3.5rem; /* match static-text height */
- 
+  height: 3.5rem;
+  /* match static-text height */
+
 }
 
 
@@ -500,7 +501,8 @@ span {
 }
 
 .exp_timeline {
-  font-size: 1.8rem;;
+  font-size: 1.8rem;
+  ;
   position: relative;
   padding-left: 2rem;
   margin-left: 2rem;
@@ -515,8 +517,32 @@ span {
   position: relative;
   margin-bottom: 0.9rem;
   list-style: none;
-  }
-  
+  padding-top: 1rem;
+}
+
 .timeline li span {
-    font-weight: bolder;
-  }
+  font-weight: bolder;
+}
+
+.certifications {
+  font-size: 1.8rem;
+  ;
+  position: relative;
+  padding-left: 2rem;
+  margin-left: 2rem;
+  border-left: 2px solid var(--main-color);
+  margin-top: 5rem;
+}
+
+.certification-list li {
+  position: relative;
+  margin-bottom: 0.9rem;
+  list-style: none;
+  padding-top: 1rem;
+}
+
+.certifications li span {
+  font-weight: bolder;
+}
+
+
