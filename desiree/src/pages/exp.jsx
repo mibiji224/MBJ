@@ -1,4 +1,4 @@
-function exp_tl() {
+function Exp() {
     return(
         <section className="readMore" id="readMore">
                 <div>
@@ -56,3 +56,5 @@ function exp_tl() {
             </section>
     );
 }
+
+export default Exp;

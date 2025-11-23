@@ -1,5 +1,5 @@
-import Footer from './components/Footer.jsx';
 import Head from './components/Header.jsx';
+import Exp from './pages/exp.jsx';
 import Home from './pages/home.jsx';
 
 function App() {
@@ -7,6 +7,7 @@ function App() {
     <>
     <Head/>
     <Home/>
+    <Exp/>
     </>
   );
 }
