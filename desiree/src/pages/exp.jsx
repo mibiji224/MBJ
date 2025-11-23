@@ -20,12 +20,12 @@ function Exp() {
 
                         {/* Date */}
                         <time className="block mb-3 text-lg font-mono font-medium leading-none text-red-500 uppercase tracking-wider">
-                            March 13th, 2025
+                            July 1st, 2025
                         </time>
 
                         {/* Heading */}
                         <h3 className="flex items-center mb-4 text-4xl font-bold text-white">
-                            Flowbite Application UI v2.0.0
+                            Administrative Secretary
                             <span className="ml-4 bg-red-600 text-white text-sm font-medium px-3 py-1 rounded-full tracking-wide shadow-lg shadow-red-900/50">
                                 LATEST
                             </span>
@@ -33,11 +33,10 @@ function Exp() {
 
                         {/* Description */}
                         <p className="mb-6 text-xl font-normal text-neutral-400 max-w-[90%] leading-relaxed">
-                            Get access to over 20+ pages including a dashboard layout, charts, kanban board, calendar,
-                            and pre-order E-commerce & Marketing pages.
+                            Department of Education Region XI - Office of the Assistant Regional Director
                         </p>
 
-                        {/* Action Button */}
+                        {/* -----------------Action Button WILL ADD SOMEWHERE ELSE LATER 
                         <a href="#"
                             className="inline-flex items-center px-6 py-3 text-lg font-medium text-white bg-transparent border border-neutral-600 rounded-lg hover:border-red-600 hover:text-red-500 hover:bg-neutral-900 transition-all duration-300 ease-in-out group">
                             <svg className="w-5 h-5 mr-3 text-neutral-400 group-hover:text-red-500 transition-colors" fill="none" viewBox="0 0 24 24">
@@ -46,6 +45,7 @@ function Exp() {
                             </svg>
                             Download ZIP
                         </a>
+                        */}
                     </li>
 
                     {/* ITEM 2 */}
@@ -58,16 +58,16 @@ function Exp() {
                         </span>
 
                         <time className="block mb-3 text-lg font-mono font-medium leading-none text-neutral-500 uppercase tracking-wider">
-                            January 09th, 2025
+                            April 7th, 2025
                         </time>
 
                         <h3 className="text-4xl font-bold text-white mb-4">
-                            Flowbite Figma v1.3.0
+                            Customer Service Representative
                         </h3>
 
                         <p className="text-xl font-normal text-neutral-400 max-w-[90%] leading-relaxed">
-                            All of the pages and components are first designed in Figma and we keep a parity between
-                            the two versions even as we update the project.
+                            Inbound Voice Account - Alorica Davao Philippines <br/>
+                            Inbound Voice Account - Awesome CX
                         </p>
                     </li>
 
