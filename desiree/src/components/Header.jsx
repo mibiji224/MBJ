@@ -6,14 +6,14 @@ function Head() {
 
     // Toggle Mobile Menu
     const toggleMenu = () => {
-        setIsMenuOpen(!isScrolled); // Typo fix in logic, should be !isMenuOpen. Fixed below.
-        setIsMenuOpen(!isMenuOpen);
+        setIsMenuOpen((prev) => !prev);
     };
 
     // Handle Scroll Effect (Glassmorphism)
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > 50) {
+            // Trigger effect slightly earlier (20px) for smoother feel
+            if (window.scrollY > 20) {
                 setIsScrolled(true);
             } else {
                 setIsScrolled(false);
@@ -33,32 +33,44 @@ function Head() {
     ];
 
     return (
-        <header 
-            className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 font-['Poppins'] ${
-                isScrolled ? 'bg-black/80 backdrop-blur-md py-4 shadow-[0_4px_30px_rgba(219,10,10,0.1)]' : 'bg-transparent py-6'
+        <header
+            className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out font-['Poppins'] ${
+                isScrolled 
+                    ? 'bg-black/70 backdrop-blur-lg py-3 shadow-lg shadow-[#db0a0a]/5' 
+                    : 'bg-transparent py-6'
             }`}
         >
-            <div className="flex justify-between items-center px-[5%] lg:px-[12%]">
+            {/* ALIGNMENT FIX: 
+               - 'w-full' takes full width.
+               - 'justify-between' pushes Logo to far left and Nav to far right.
+               - 'px-6 lg:px-16' ensures it sits close to the edge but not touching it.
+            */}
+            <div className="w-full flex justify-between items-center px-6 lg:px-16">
                 
                 {/* --- LOGO --- */}
-                <a href="#home" className="text-3xl font-extrabold text-white tracking-wider group">
+                <a href="#home" className="text-3xl md:text-4xl font-black text-white tracking-tighter group flex items-center gap-1 select-none">
                     M
-                    <span className="text-[#db0a0a] drop-shadow-[0_0_10px_rgba(219,10,10,0.8)] group-hover:text-white transition-colors duration-300">
+                    <span className="text-[#db0a0a] drop-shadow-[0_0_15px_rgba(219,10,10,0.8)] group-hover:text-white transition-colors duration-300">
                         BJ
                     </span>
+                    {/* Small accent dot */}
+                    <div className="w-1.5 h-1.5 bg-[#db0a0a] rounded-full mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </a>
 
                 {/* --- DESKTOP NAVBAR --- */}
-                <nav className="hidden md:flex items-center gap-10">
+                <nav className="hidden md:flex items-center gap-12">
                     {navLinks.map((link) => (
                         <a 
                             key={link.name} 
                             href={link.href} 
-                            className="relative text-lg font-medium text-white transition-colors duration-300 hover:text-[#db0a0a] group"
+                            className="relative text-base font-semibold text-gray-300 transition-all duration-300 hover:text-white group/link"
                         >
                             {link.name}
-                            {/* Animated Underline */}
-                            <span className="absolute left-0 bottom-[-5px] w-0 h-[2px] bg-[#db0a0a] transition-all duration-300 group-hover:w-full"></span>
+                            {/* Fancy Animated Underline (expands from center) */}
+                            <span className="absolute left-1/2 bottom-[-4px] w-0 h-[2px] bg-[#db0a0a] transition-all duration-300 ease-out group-hover/link:w-full group-hover/link:left-0"></span>
+                            
+                            {/* Glow effect on hover */}
+                            <span className="absolute inset-0 blur-lg bg-[#db0a0a]/0 group-hover/link:bg-[#db0a0a]/20 transition-all duration-300 -z-10"></span>
                         </a>
                     ))}
                 </nav>
@@ -67,28 +79,35 @@ function Head() {
                 <div className="md:hidden">
                     <button 
                         onClick={toggleMenu} 
-                        className="text-white text-3xl focus:outline-none"
+                        className="text-white p-2 focus:outline-none transition-transform duration-300 active:scale-90"
+                        aria-label="Toggle Menu"
                     >
-                        {/* Simple SVG Icon switching between Menu and Close */}
                         {isMenuOpen ? (
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            // Close Icon (X)
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#db0a0a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                         ) : (
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                            // Hamburger Icon
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                         )}
                     </button>
                 </div>
             </div>
 
             {/* --- MOBILE DROPDOWN MENU --- */}
-            {/* Creates a slide-down effect */}
-            <div className={`md:hidden absolute top-full left-0 w-full bg-[#080707] border-t border-gray-800 overflow-hidden transition-all duration-500 ease-in-out ${isMenuOpen ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                <nav className="flex flex-col items-center py-6 gap-6">
-                    {navLinks.map((link) => (
+            <div 
+                className={`md:hidden absolute top-full left-0 w-full bg-black/90 backdrop-blur-xl border-b border-[#db0a0a]/20 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+                    isMenuOpen ? 'max-h-[400px] opacity-100 shadow-[0_10px_30px_rgba(0,0,0,0.5)]' : 'max-h-0 opacity-0'
+                }`}
+            >
+                <nav className="flex flex-col items-center py-8 gap-8">
+                    {navLinks.map((link, index) => (
                         <a 
                             key={link.name} 
                             href={link.href} 
-                            onClick={() => setIsMenuOpen(false)} // Close menu when clicked
-                            className="text-lg font-medium text-white hover:text-[#db0a0a] transition-colors duration-300 block w-full text-center py-2"
+                            onClick={() => setIsMenuOpen(false)}
+                            // Staggered delay for links appearing
+                            style={{ transitionDelay: `${index * 50}ms` }}
+                            className={`text-xl font-bold text-gray-300 hover:text-[#db0a0a] transition-all duration-300 transform ${isMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'}`}
                         >
                             {link.name}
                         </a>

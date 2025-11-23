@@ -24,7 +24,7 @@ function Home() {
     return (
         <div className="relative min-h-screen bg-transparent text-white font-['Poppins'] overflow-hidden selection:bg-[#db0a0a] selection:text-black">
             <RippleBackground />
-            
+
             {/* --- CUSTOM STYLES & ANIMATIONS --- */}
             <style>
                 {`
@@ -81,12 +81,12 @@ function Home() {
                             Width creates space for the text.
                         */}
                         <div className="relative h-[1.3em] w-[280px] sm:w-[350px] lg:w-[450px] text-left pl-2">
-                            
+
                             {/* KEY CONCEPT: 
                                 The 'key' prop tells React this is a "new" element every time 
                                 currentRoleIndex changes. This forces the animation to restart.
                             */}
-                            <span 
+                            <span
                                 key={currentRoleIndex}
                                 className="absolute left-4 top-0 text-[#db0a0a] drop-shadow-[0_0_10px_rgba(219,10,10,0.8)] animate-[textCycle_4s_ease-in-out_forwards]"
                             >
@@ -103,10 +103,38 @@ function Home() {
 
                     {/* Buttons & Socials Area */}
                     <div className="flex flex-col sm:flex-row items-center gap-6">
-                        <a href="#readMore"
-                            className="group relative px-8 py-4 bg-[#db0a0a] text-black font-bold text-lg rounded-full overflow-hidden transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(219,10,10,0.6)]">
-                            <span className="relative z-10">Read More</span>
-                            <div className="absolute inset-0 h-full w-full scale-0 rounded-full transition-all duration-300 group-hover:scale-100 group-hover:bg-white/20"></div>
+                        <a
+                            href="#readMore"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                const target = document.querySelector('#readMore');
+                                if (target) {
+                                    target.scrollIntoView({ behavior: 'smooth' });
+                                }
+                            }}
+                            className="group relative inline-flex items-center gap-2 px-8 py-4 bg-[#db0a0a] text-black font-bold text-lg rounded-full overflow-hidden transition-all duration-300 
+    hover:scale-105 
+    hover:shadow-[0_0_40px_rgba(219,10,10,0.6)] 
+    hover:ring-2 hover:ring-white hover:ring-offset-2 hover:ring-offset-black"
+                        >
+                            {/* TEXT */}
+                            <span className="relative z-10 transition-transform duration-300 group-hover:-translate-x-1">
+                                Read More
+                            </span>
+
+                            {/* SLIDING ARROW ICON */}
+                            <svg
+                                className="relative z-10 w-0 overflow-hidden opacity-0 transition-all duration-300 ease-out group-hover:w-5 group-hover:opacity-100 group-hover:translate-x-1"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                            </svg>
+
+                            {/* DIAGONAL SHEEN EFFECT */}
+                            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-[150%] transition-transform duration-700 ease-in-out bg-gradient-to-r from-transparent via-white/40 to-transparent skew-x-12 z-0"></div>
                         </a>
 
                         <div className="flex gap-4">
