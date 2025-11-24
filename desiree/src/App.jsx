@@ -1,6 +1,7 @@
 import Head from './components/Header.jsx';
 import Exp from './pages/exp.jsx';
 import Home from './pages/home.jsx';
+import Project from './pages/project.jsx';
 
 function App() {
   return(
@@ -8,6 +9,7 @@ function App() {
     <Head/>
     <Home/>
     <Exp/>
+    <Project/>
     </>
   );
 }

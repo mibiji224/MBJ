@@ -21,16 +21,58 @@ const About = () => {
         {
             title: "President",
             company: "College of Computing Education Student Government - University of Mindanao",
-            date: "July 2024",
+            date: "July 2024 - July 2025",
             type: "LEADERSHIP",
             description: "Led the student body of the College of Computing Education. Organized events, facilitated student welfare programs, and bridged communication between students and faculty."
         },
         {
             title: "External Vice President",
             company: "Council of College Student Governments - University of Mindanao",
-            date: "July 2024",
+            date: "July 2024 - July 2025",
             type: "LEADERSHIP",
             description: "Led external affairs for the University of Mindanao’s central student government, representing the entire student body. I negotiated strategic partnerships and executed university-wide welfare programs to bridge student advocacy with administrative policy."
+        },
+        {
+            title: "Marketing and Multimedia Unit Supervisor",
+            company: "College of Computing Education Student Government - University of Mindanao",
+            date: "July 2024 - July 2025",
+            type: "LEADERSHIP",
+            description: "Led a team to manage marketing campaigns and multimedia content creation for student government events. Oversaw social media strategies, graphic design, and video production to enhance student engagement and event visibility."
+        },
+        {
+            title: "Assistant Recreational Head",
+            company: "Philippine Society of Information Technology Students Region XI",
+            date: "August 2024 - May 2025",
+            type: null,
+            description: "Assisted in organizing recreational activities and events for IT students across Region XI. Coordinated logistics, managed event schedules, and ensured participant engagement during regional IT student gatherings."
+        },
+        {
+            title: "Documentation Photographer",
+            company: "Blockchain Campus Conference",
+            date: "October 2024",
+            type: "EVENT VOLUNTEER",
+            description: "Documented the conference proceedings through photography, capturing candid moments and staged shots of attendees and speakers."
+        },
+        {
+            title: "Secretary",
+            company: "College of Computing Education Student Government - University of Mindanao",
+            date: "July 2023 - July 2024",
+            type: null,
+            description: "Managed official documentation, meeting minutes, and correspondence for the student government. Ensured effective communication between student representatives and faculty members."
+        },
+        {
+            title: "Assistant Secretary",
+            company: "Philippine Society of Information Technology Students Region XI",
+            date: "October 2023 - March 2024",
+            type: null,
+            description: "Assisted in managing documentation and correspondence for the regional IT student organization. Supported event planning and communication efforts among member schools."
+        },
+        {
+            title: "Publication and Documentation Head",
+            company: "United Nation's Girl Up Organization - Davao Chapter",
+            date: "July 2023 - December 2023",
+            type: null,
+            description: "Led the publication and documentation efforts for the Girl Up Davao Chapter. Managed content creation, social media updates, and event documentation to promote the organization's mission and activities."
         },
         {
             title: "Digital Artist",
@@ -38,6 +80,13 @@ const About = () => {
             date: "March 2020",
             type: null,
             description: "Conceptualizing and executing custom digital artwork for global clients using industry-standard tools (e.g., Adobe Photoshop, Procreate, IbisPaint). Specializing in Character Design, Semi-Realism, Anime /2D Style, etc., I translate client ideas into compelling visual narratives with a focus on composition, color theory, and detail."
+        },
+        {
+            title: "Personal Assistant",
+            company: "Secondary Education English Teacher - Davao City National High School",
+            date: "August 2018 - April 2021",
+            type: null,
+            description: "Provided administrative support by managing student data entry and automated grade computations using spreadsheets. Oversaw document preparation and revisions, and designed visual aids, including PowerPoint presentations."
         }
     ];
 
@@ -58,16 +107,16 @@ const About = () => {
 
     // NEW SKILLS DATA
     const coreSkills = [
-        "Leadership & Team Management",
-        "Project Management & Execution",
-        "Organizational Skills & Time Management",
-        "Communication & Technical Writing",
-        "Creative Design & Visual Communication",
-        "Web Development & Programming",
-        "Marketing & Branding Strategies",
-        "Data Analysis & Problem Solving",
-        "Documentation & Event Photography",
-        "Administrative & Office Support"
+        "Leadership", "Team Management",
+        "Project Management",
+        "Organizational Skills", "Time Management",
+        "Communication", "Technical Writing",
+        "Creative Design", "Visual Communication",
+        "Web Development", "Programming",
+        "Marketing", "Branding Strategies",
+        "Data Analysis", "Problem Solving",
+        "Documentation", "Event Photography",
+        "Administrative", "Office Support"
     ];
 
     const technicalSkills = [

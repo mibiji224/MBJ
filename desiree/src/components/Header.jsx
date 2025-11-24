@@ -28,7 +28,7 @@ function Head() {
     const navLinks = [
         { name: 'Home', href: '#home' },
         { name: 'About', href: '#about' },
-        { name: 'Projects', href: '#proj' },
+        { name: 'Projects', href: '#projects' },
         { name: 'Connect', href: '#contactme' },
     ];
 
@@ -49,9 +49,9 @@ function Head() {
                 
                 {/* --- LOGO --- */}
                 <a href="#home" className="text-3xl md:text-4xl font-black text-white tracking-tighter group flex items-center gap-1 select-none">
-                    M
+                    D
                     <span className="text-[#db0a0a] drop-shadow-[0_0_15px_rgba(219,10,10,0.8)] group-hover:text-white transition-colors duration-300">
-                        BJ
+                        R.S
                     </span>
                     {/* Small accent dot */}
                     <div className="w-1.5 h-1.5 bg-[#db0a0a] rounded-full mt-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
