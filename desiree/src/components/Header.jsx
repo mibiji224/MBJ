@@ -1,4 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { gsap } from 'gsap';
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+
+// Register GSAP plugin (safe to call multiple times)
+gsap.registerPlugin(ScrollToPlugin);
 
 function Head() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -32,6 +37,29 @@ function Head() {
         { name: 'Connect', href: '#connect' },
     ];
 
+    // Smooth scroll handler using GSAP ScrollToPlugin
+    const handleNavClick = (e, href) => {
+        // allow middle-click / ctrl-click to open new tab
+        if (e && (e.metaKey || e.ctrlKey || (e.button && e.button === 1))) return;
+        if (e) e.preventDefault();
+
+        try {
+            // Use ScrollToPlugin by passing the hash directly and offset for header
+            gsap.to(window, {
+                duration: 0.8,
+                ease: 'power2.out',
+                scrollTo: { y: href, offsetY: 72 },
+            });
+        } catch (err) {
+            // Fallback to native behavior
+            const target = document.querySelector(href);
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Close mobile menu if open
+        setIsMenuOpen(false);
+    };
+
     return (
         <header
             className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out font-['Poppins'] ${
@@ -48,7 +76,7 @@ function Head() {
             <div className="w-full flex justify-between items-center px-6 lg:px-16">
                 
                 {/* --- LOGO --- */}
-                <a href="#home" className="text-3xl md:text-4xl font-black text-white tracking-tighter group flex items-center gap-1 select-none">
+                <a href="#home" onClick={(e) => handleNavClick(e, '#home')} className="text-3xl md:text-4xl font-black text-white tracking-tighter group flex items-center gap-1 select-none">
                     D
                     <span className="text-[#db0a0a] drop-shadow-[0_0_15px_rgba(219,10,10,0.8)] group-hover:text-white transition-colors duration-300">
                         R.S
@@ -62,7 +90,8 @@ function Head() {
                     {navLinks.map((link) => (
                         <a 
                             key={link.name} 
-                            href={link.href} 
+                            href={link.href}
+                            onClick={(e) => handleNavClick(e, link.href)}
                             className="relative text-base font-semibold text-gray-300 transition-all duration-300 hover:text-white group/link"
                         >
                             {link.name}
@@ -103,8 +132,8 @@ function Head() {
                     {navLinks.map((link, index) => (
                         <a 
                             key={link.name} 
-                            href={link.href} 
-                            onClick={() => setIsMenuOpen(false)}
+                            href={link.href}
+                            onClick={(e) => handleNavClick(e, link.href)}
                             // Staggered delay for links appearing
                             style={{ transitionDelay: `${index * 50}ms` }}
                             className={`text-xl font-bold text-gray-300 hover:text-[#db0a0a] transition-all duration-300 transform ${isMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0'}`}
