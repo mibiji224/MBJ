@@ -6,7 +6,7 @@ function Home() {
     const roles = [
         "a Web Developer",
         "a Student Leader",
-        "an Active Volunteer"
+        "a Tech Support"
     ];
 
     // 2. State to track which role to show
@@ -107,7 +107,7 @@ function Home() {
                             href="#readMore"
                             onClick={(e) => {
                                 e.preventDefault();
-                                const target = document.querySelector('#readMore');
+                                const target = document.querySelector('#about');
                                 if (target) {
                                     target.scrollIntoView({ behavior: 'smooth' });
                                 }
