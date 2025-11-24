@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
-import { Code, Palette, ExternalLink, Github, Layers, Image as ImageIcon, PenTool } from 'lucide-react';
+import { useState } from 'react';
+import { Code, Palette, ExternalLink, GitBranch, Layers, Image as ImageIcon, PenTool, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const Projects = () => {
   const [activeTab, setActiveTab] = useState('dev'); // 'dev', 'art', or 'graphics'
+  
+  // --- PAGINATION STATE ---
+  const [currentDevPage, setCurrentDevPage] = useState(1);
+  const itemsPerPage = 3;
 
   // --- DATA SECTIONS ---
 
-  // 1. DEVELOPMENT PROJECTS
+  // 1. DEVELOPMENT PROJECTS (Added more items to demonstrate pagination)
   const devProjects = [
     {
+      id: 1,
       title: "Student Portal Dashboard",
       description: "A comprehensive dashboard for tracking student grades and schedules. Built with a focus on data visualization and user experience.",
       tags: ["React", "Tailwind CSS", "Chart.js"],
@@ -16,6 +21,7 @@ const Projects = () => {
       image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=Student+Dashboard"
     },
     {
+      id: 2,
       title: "Event Registration System",
       description: "Automated registration flow for campus events with QR code generation and email notifications.",
       tags: ["Python", "Django", "PostgreSQL"],
@@ -23,13 +29,49 @@ const Projects = () => {
       image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=Event+System"
     },
     {
+      id: 3,
       title: "Personal Portfolio V1",
       description: "The first iteration of my personal website showcasing my journey as a developer and student leader.",
       tags: ["HTML", "CSS", "JavaScript"],
       links: { demo: "#", github: "#" },
       image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=Portfolio+V1"
+    },
+    {
+      id: 4,
+      title: "E-Commerce API",
+      description: "A robust backend API handling payments, inventory management, and user authentication.",
+      tags: ["Node.js", "Express", "MongoDB"],
+      links: { demo: "#", github: "#" },
+      image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=E-Commerce+API"
+    },
+    {
+      id: 5,
+      title: "Chat Application",
+      description: "Real-time messaging platform supporting private chats and group rooms using WebSockets.",
+      tags: ["React", "Socket.io", "Redis"],
+      links: { demo: "#", github: "#" },
+      image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=Chat+App"
+    },
+    {
+      id: 6,
+      title: "Task Manager CLI",
+      description: "A command-line interface tool for managing developer tasks and git workflows efficiently.",
+      tags: ["Rust", "CLI", "Shell"],
+      links: { demo: "#", github: "#" },
+      image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=CLI+Tool"
     }
   ];
+
+  // Logic to slice the array for pagination
+  const indexOfLastItem = currentDevPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentDevProjects = devProjects.slice(indexOfFirstItem, indexOfLastItem);
+  const totalDevPages = Math.ceil(devProjects.length / itemsPerPage);
+
+  // Pagination Handlers
+  const paginate = (pageNumber) => setCurrentDevPage(pageNumber);
+  const nextPage = () => setCurrentDevPage((prev) => Math.min(prev + 1, totalDevPages));
+  const prevPage = () => setCurrentDevPage((prev) => Math.max(prev - 1, 1));
 
   // 2. CREATIVE ARTS PROJECTS
   const artProjects = [
@@ -38,56 +80,56 @@ const Projects = () => {
       category: "Character Design",
       description: "A semi-realistic character exploration focusing on neon lighting and futuristic attire.",
       tools: "Procreate",
-      image: "https://placehold.co/400x600/1a1a1a/db0a0a?text=Character+Art" // Tall image
+      image: "https://placehold.co/400x600/1a1a1a/db0a0a?text=Character+Art"
     },
     {
       title: "Ethereal Landscapes",
       category: "Environment Art",
       description: "Digital painting series exploring atmospheric perspective and fantasy environments.",
       tools: "Adobe Photoshop",
-      image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=Landscape" // Wide image
+      image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=Landscape"
     },
     {
       title: "Neon City",
       category: "Illustration",
       description: "Background art focusing on complex perspective and color theory.",
       tools: "Photoshop",
-      image: "https://placehold.co/600x300/1a1a1a/db0a0a?text=Neon+City" // Wide panorama
+      image: "https://placehold.co/600x300/1a1a1a/db0a0a?text=Neon+City"
     },
     {
       title: "The Guardian",
       category: "Concept Art",
       description: "Fantasy creature design for a personal world-building project.",
       tools: "Krita",
-      image: "https://placehold.co/400x550/1a1a1a/db0a0a?text=Creature+Design" // Tall
+      image: "https://placehold.co/400x550/1a1a1a/db0a0a?text=Creature+Design"
     },
     {
       title: "Mecha Pilot",
       category: "Character Design",
       description: "Suit design and helmet HUD interface concepts.",
       tools: "Procreate",
-      image: "https://placehold.co/400x600/1a1a1a/db0a0a?text=Mecha" // Tall
+      image: "https://placehold.co/400x600/1a1a1a/db0a0a?text=Mecha"
     },
     {
       title: "Floating Islands",
       category: "Environment",
       description: "Whimsical sky islands concept art.",
       tools: "Photoshop",
-      image: "https://placehold.co/500x500/1a1a1a/db0a0a?text=Islands" // Square
+      image: "https://placehold.co/500x500/1a1a1a/db0a0a?text=Islands"
     },
     {
       title: "Cyber Skull",
       category: "Illustration",
       description: "Anatomical study with cybernetic enhancements.",
       tools: "Krita",
-      image: "https://placehold.co/400x400/1a1a1a/db0a0a?text=Skull" // Square
+      image: "https://placehold.co/400x400/1a1a1a/db0a0a?text=Skull"
     },
     {
       title: "Retro Racer",
       category: "Vehicle Design",
       description: "80s inspired futuristic vehicle design.",
       tools: "Blender / PS",
-      image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=Racer" // Wide
+      image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=Racer"
     }
   ];
 
@@ -105,7 +147,7 @@ const Projects = () => {
       category: "Event Collateral",
       description: "Promotional material design for the annual campus technology summit.",
       tools: "Adobe Illustrator",
-      image: "https://placehold.co/400x600/1a1a1a/db0a0a?text=Event+Poster" // Tall
+      image: "https://placehold.co/400x600/1a1a1a/db0a0a?text=Event+Poster"
     },
     {
       title: "Student Council Social Media Kit",
@@ -119,7 +161,7 @@ const Projects = () => {
       category: "Editorial",
       description: "Clean typography and layout for the year-end financial report.",
       tools: "InDesign",
-      image: "https://placehold.co/400x500/1a1a1a/db0a0a?text=Report" // Tall
+      image: "https://placehold.co/400x500/1a1a1a/db0a0a?text=Report"
     },
     {
       title: "Coffee Shop Logo",
@@ -133,14 +175,14 @@ const Projects = () => {
       category: "UI Design",
       description: "Component library for a fitness application.",
       tools: "Figma",
-      image: "https://placehold.co/300x600/1a1a1a/db0a0a?text=UI+Kit" // Very Tall
+      image: "https://placehold.co/300x600/1a1a1a/db0a0a?text=UI+Kit"
     },
     {
       title: "Music Festival Banner",
       category: "Advertising",
       description: "Large format print design for outdoor display.",
       tools: "Photoshop",
-      image: "https://placehold.co/600x200/1a1a1a/db0a0a?text=Banner" // Very Wide
+      image: "https://placehold.co/600x200/1a1a1a/db0a0a?text=Banner"
     }
   ];
 
@@ -204,62 +246,93 @@ const Projects = () => {
           </div>
         </div>
 
-        {/* --- DEVELOPMENT PROJECTS GRID (Standard Grid remains for Code) --- */}
+        {/* --- DEVELOPMENT PROJECTS GRID (PAGINATED) --- */} 
         {activeTab === 'dev' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {devProjects.map((project, index) => (
-              <div key={index} className="group bg-[#0f0f0f] border border-white/5 rounded-2xl overflow-hidden hover:border-[#db0a0a]/50 transition-all duration-300 hover:-translate-y-2">
-                <div className="h-48 overflow-hidden relative">
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] to-transparent z-10 opacity-60"></div>
-                  <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
-                  <div className="absolute top-4 right-4 z-20 p-2 bg-black/50 backdrop-blur-md rounded-lg border border-white/10">
-                    <Layers className="w-4 h-4 text-[#db0a0a]" />
+          <div>
+            {/* Project Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8 animate-in fade-in slide-in-from-right-8 duration-500 key={currentDevPage}">
+              {currentDevProjects.map((project, index) => (
+                <div key={index} className="group bg-[#0f0f0f] border border-white/5 rounded-2xl overflow-hidden hover:border-[#db0a0a]/50 transition-all duration-300 hover:-translate-y-2">
+                  <div className="h-48 overflow-hidden relative">
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] to-transparent z-10 opacity-60"></div>
+                    <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"/>
+                    <div className="absolute top-4 right-4 z-20 p-2 bg-black/50 backdrop-blur-md rounded-lg border border-white/10">
+                      <Layers className="w-4 h-4 text-[#db0a0a]" />
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#db0a0a] transition-colors">{project.title}</h3>
+                    <p className="text-gray-400 text-sm mb-4 line-clamp-2">{project.description}</p>
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {project.tags.map((tag, idx) => (
+                        <span key={idx} className="text-xs font-mono text-[#db0a0a] bg-[#db0a0a]/10 px-2 py-1 rounded border border-[#db0a0a]/20">{tag}</span>
+                      ))}
+                    </div>
+                    <div className="flex gap-4 pt-4 border-t border-white/5">
+                      <a href={project.links.github} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"><GitBranch className="w-4 h-4" /> Code</a>
+                      <a href={project.links.demo} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"><ExternalLink className="w-4 h-4" /> Live Demo</a>
+                    </div>
                   </div>
                 </div>
-                <div className="p-6">
-                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#db0a0a] transition-colors">{project.title}</h3>
-                  <p className="text-gray-400 text-sm mb-4 line-clamp-2">{project.description}</p>
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.tags.map((tag, idx) => (
-                      <span key={idx} className="text-xs font-mono text-[#db0a0a] bg-[#db0a0a]/10 px-2 py-1 rounded border border-[#db0a0a]/20">{tag}</span>
-                    ))}
-                  </div>
-                  <div className="flex gap-4 pt-4 border-t border-white/5">
-                    <a href={project.links.github} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"><Github className="w-4 h-4" /> Code</a>
-                    <a href={project.links.demo} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"><ExternalLink className="w-4 h-4" /> Live Demo</a>
-                  </div>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            <div className="flex justify-center items-center gap-2 mt-8">
+                {/* Prev Button */}
+                <button 
+                  onClick={prevPage}
+                  disabled={currentDevPage === 1}
+                  className={`flex items-center justify-center w-10 h-10 rounded-lg border border-white/5 transition-all
+                    ${currentDevPage === 1 
+                      ? 'text-gray-600 cursor-not-allowed bg-[#1a1a1a]' 
+                      : 'text-gray-300 bg-[#1a1a1a] hover:bg-white/5 hover:text-white'}`}
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+
+                {/* Number Buttons */}
+                {[...Array(totalDevPages)].map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => paginate(i + 1)}
+                    className={`w-10 h-10 rounded-lg text-sm font-medium border transition-all
+                      ${currentDevPage === i + 1
+                        ? 'bg-[#db0a0a] border-[#db0a0a] text-white'
+                        : 'bg-[#1a1a1a] border-white/5 text-gray-300 hover:bg-white/5 hover:text-white'
+                      }`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+
+                {/* Next Button */}
+                <button 
+                  onClick={nextPage}
+                  disabled={currentDevPage === totalDevPages}
+                  className={`flex items-center justify-center w-10 h-10 rounded-lg border border-white/5 transition-all
+                    ${currentDevPage === totalDevPages 
+                      ? 'text-gray-600 cursor-not-allowed bg-[#1a1a1a]' 
+                      : 'text-gray-300 bg-[#1a1a1a] hover:bg-white/5 hover:text-white'}`}
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+            </div>
           </div>
         )}
 
-        {/* --- CREATIVE ARTS (TRUE MASONRY / PINTEREST LAYOUT) --- */}
+        {/* --- CREATIVE ARTS (MASONRY - Fixed Height + Scrollable) --- */}
         {activeTab === 'art' && (
           <div className="h-[800px] overflow-y-auto modern-scrollbar pr-2">
-            {/* Key Changes:
-              1. Used 'columns-2 md:columns-3 lg:columns-5' for masonry columns
-              2. Added 'gap-4' for spacing between columns
-              3. Added 'space-y-4' for spacing between vertical items
-            */}
             <div className="columns-2 md:columns-3 lg:columns-5 gap-4 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-8">
               {artProjects.map((art, index) => (
-                <div 
-                  key={index} 
-                  className="break-inside-avoid group relative overflow-hidden rounded-xl bg-[#0f0f0f] border border-white/5 mb-4"
-                >
-                  {/* Image is h-auto to respect original aspect ratio */}
-                  <img 
-                    src={art.image} 
-                    alt={art.title} 
-                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
+                <div key={index} className="break-inside-avoid group relative overflow-hidden rounded-xl bg-[#0f0f0f] border border-white/5 mb-4">
+                  <img src={art.image} alt={art.title} className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"/>
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                     <span className="text-[#db0a0a] text-[10px] font-bold uppercase tracking-wider mb-1">{art.category}</span>
                     <h3 className="text-sm font-bold text-white mb-1 leading-tight">{art.title}</h3>
                     <div className="flex items-center gap-2 text-[10px] text-gray-400 font-mono border-t border-white/10 pt-2 mt-1">
-                      <ImageIcon className="w-3 h-3" />
-                      {art.tools}
+                      <ImageIcon className="w-3 h-3" /> {art.tools}
                     </div>
                   </div>
                 </div>
@@ -268,28 +341,18 @@ const Projects = () => {
           </div>
         )}
 
-        {/* --- GRAPHICS (TRUE MASONRY / PINTEREST LAYOUT) --- */}
+        {/* --- GRAPHICS (MASONRY - Fixed Height + Scrollable) --- */}
         {activeTab === 'graphics' && (
           <div className="h-[800px] overflow-y-auto modern-scrollbar pr-2">
-             {/* Same layout structure as Creative Arts */}
             <div className="columns-2 md:columns-3 lg:columns-5 gap-4 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-8">
               {graphicProjects.map((graphic, index) => (
-                <div 
-                  key={index} 
-                  className="break-inside-avoid group relative overflow-hidden rounded-xl bg-[#0f0f0f] border border-white/5 mb-4"
-                >
-                  {/* Image is h-auto to respect original aspect ratio */}
-                  <img 
-                    src={graphic.image} 
-                    alt={graphic.title} 
-                    className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
+                <div key={index} className="break-inside-avoid group relative overflow-hidden rounded-xl bg-[#0f0f0f] border border-white/5 mb-4">
+                  <img src={graphic.image} alt={graphic.title} className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"/>
                   <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4">
                     <span className="text-[#db0a0a] text-[10px] font-bold uppercase tracking-wider mb-1">{graphic.category}</span>
                     <h3 className="text-sm font-bold text-white mb-1 leading-tight">{graphic.title}</h3>
                     <div className="flex items-center gap-2 text-[10px] text-gray-400 font-mono border-t border-white/10 pt-2 mt-1">
-                      <PenTool className="w-3 h-3" />
-                      {graphic.tools}
+                      <PenTool className="w-3 h-3" /> {graphic.tools}
                     </div>
                   </div>
                 </div>

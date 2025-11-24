@@ -29,7 +29,7 @@ function Head() {
         { name: 'Home', href: '#home' },
         { name: 'About', href: '#about' },
         { name: 'Projects', href: '#projects' },
-        { name: 'Connect', href: '#contactme' },
+        { name: 'Connect', href: '#connect' },
     ];
 
     return (

@@ -2,6 +2,7 @@ import Head from './components/Header.jsx';
 import Exp from './pages/exp.jsx';
 import Home from './pages/home.jsx';
 import Project from './pages/project.jsx';
+import Contact from './pages/connect.jsx';
 
 function App() {
   return(
@@ -10,6 +11,7 @@ function App() {
     <Home/>
     <Exp/>
     <Project/>
+    <Contact/>
     </>
   );
 }
