@@ -27,12 +27,8 @@ const Contact = () => {
     };
 
     return (
-        <section className="bg-[#050505] text-white py-20 px-6 lg:px-12 font-sans relative overflow-hidden" id="connect">
+        <section className="bg-transparent text-white py-20 px-6 lg:px-12 font-sans relative overflow-hidden" id="connect">
             
-            {/* Ambient Background - Adjusted for new layout */}
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-b from-[#db0a0a]/10 to-transparent rounded-full blur-[120px] -z-10 pointer-events-none opacity-40"></div>
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gradient-to-t from-[#db0a0a]/5 to-transparent rounded-full blur-[100px] -z-10 pointer-events-none"></div>
-
             <div className="max-w-[1400px] mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
                     
@@ -60,7 +56,7 @@ const Contact = () => {
                         <div className="flex flex-col sm:flex-row gap-8 py-6 border-t border-white/5 border-b">
                             {/* Email */}
                             <div className="flex items-start gap-4">
-                                <div className="p-3 rounded-full bg-white/5 text-[#db0a0a] border border-white/5">
+                                <div className="p-3 rounded-full bg-transparent text-[#db0a0a] border border-white/10">
                                     <Mail className="w-5 h-5" />
                                 </div>
                                 <div>
@@ -73,7 +69,7 @@ const Contact = () => {
 
                             {/* Location */}
                             <div className="flex items-start gap-4">
-                                <div className="p-3 rounded-full bg-white/5 text-[#db0a0a] border border-white/5">
+                                <div className="p-3 rounded-full bg-transparent text-[#db0a0a] border border-white/10">
                                     <MapPin className="w-5 h-5" />
                                 </div>
                                 <div>
@@ -88,7 +84,7 @@ const Contact = () => {
                             <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4">Follow Me</p>
                             <div className="flex gap-4">
                                 {[Github, Linkedin, Instagram, Twitter].map((Icon, index) => (
-                                    <a key={index} href="#" className="w-10 h-10 rounded-full bg-[#1a1a1a] border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#db0a0a] hover:border-[#db0a0a] hover:-translate-y-1 transition-all duration-300">
+                                    <a key={index} href="#" className="w-10 h-10 rounded-full bg-transparent border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-[#db0a0a] hover:border-[#db0a0a] hover:-translate-y-1 transition-all duration-300">
                                         <Icon className="w-4 h-4" />
                                     </a>
                                 ))}
@@ -98,10 +94,7 @@ const Contact = () => {
 
                     {/* --- RIGHT COLUMN: Compact Form (5 Columns) --- */}
                     <div className="lg:col-span-5">
-                        <div className="bg-[#0a0a0a]/40 backdrop-blur-xl border border-white/10 p-8 rounded-3xl relative shadow-2xl">
-                            {/* Decorative glow behind form */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent rounded-3xl pointer-events-none"></div>
-
+                        <div className="bg-transparent border border-white/10 p-8 rounded-3xl relative shadow-none">
                             <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
                                 <h3 className="text-xl font-bold text-white mb-2">Send a Message</h3>
                                 
@@ -111,7 +104,7 @@ const Contact = () => {
                                         type="text" name="name" value={formData.name} onChange={handleChange}
                                         onFocus={() => setFocusedField('name')} onBlur={() => setFocusedField(null)}
                                         required placeholder="Your Name"
-                                        className="w-full bg-[#0a0a0a]/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#db0a0a] focus:ring-1 focus:ring-[#db0a0a] transition-all placeholder-gray-700"
+                                        className="w-full bg-transparent border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#db0a0a] focus:ring-1 focus:ring-[#db0a0a] transition-all placeholder-gray-500"
                                     />
                                 </div>
 
@@ -121,7 +114,7 @@ const Contact = () => {
                                         type="email" name="email" value={formData.email} onChange={handleChange}
                                         onFocus={() => setFocusedField('email')} onBlur={() => setFocusedField(null)}
                                         required placeholder="your_email@example.com"
-                                        className="w-full bg-[#0a0a0a]/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#db0a0a] focus:ring-1 focus:ring-[#db0a0a] transition-all placeholder-gray-700"
+                                        className="w-full bg-transparent border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#db0a0a] focus:ring-1 focus:ring-[#db0a0a] transition-all placeholder-gray-500"
                                     />
                                 </div>
 
@@ -131,7 +124,7 @@ const Contact = () => {
                                         name="message" value={formData.message} onChange={handleChange}
                                         onFocus={() => setFocusedField('message')} onBlur={() => setFocusedField(null)}
                                         required rows="4" placeholder="How can I help you?"
-                                        className="w-full bg-[#0a0a0a]/60 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#db0a0a] focus:ring-1 focus:ring-[#db0a0a] transition-all resize-none placeholder-gray-700"
+                                        className="w-full bg-transparent border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#db0a0a] focus:ring-1 focus:ring-[#db0a0a] transition-all resize-none placeholder-gray-500"
                                     ></textarea>
                                 </div>
 
@@ -150,6 +143,7 @@ const Contact = () => {
                 </div>
             </div>
         </section>
+        
     );
 };
 
