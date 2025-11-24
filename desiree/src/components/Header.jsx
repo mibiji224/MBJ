@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+import { useEffect, useState } from 'react';
 
 // Register GSAP plugin (safe to call multiple times)
 gsap.registerPlugin(ScrollToPlugin);
