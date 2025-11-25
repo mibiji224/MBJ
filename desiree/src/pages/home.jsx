@@ -2,7 +2,7 @@ import { useEffect, useState, useLayoutEffect, useRef } from 'react';
 import RippleBackground from './RippleBackground';
 import gsap from 'gsap';
 
-import profileImage from '/src/assets/mbj.jpg';
+import profileImage from '/mbj.jpg';
 
 function Home() {
     // Reference for GSAP Scope
