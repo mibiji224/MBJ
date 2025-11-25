@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mail, MapPin, Github, Linkedin, Instagram, ArrowRight } from 'lucide-react';
 
 // Custom TikTok icon since Lucide doesn't include it by default.
@@ -34,42 +34,72 @@ const App = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [focusedField, setFocusedField] = useState(null);
     const [statusMessage, setStatusMessage] = useState(null);
+    const [emailSdkLoaded, setEmailSdkLoaded] = useState(false);
+
+    // Dynamically load EmailJS SDK to avoid import errors in preview
+    useEffect(() => {
+        const script = document.createElement('script');
+        script.src = "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js";
+        script.async = true;
+        script.onload = () => {
+            setEmailSdkLoaded(true);
+            console.log("EmailJS SDK Loaded");
+        };
+        document.body.appendChild(script);
+
+        return () => {
+            document.body.removeChild(script);
+        };
+    }, []);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // --- UPDATED SUBMIT FUNCTION TO USE VERCEL BACKEND ---
-    const handleSubmit = async (e) => {
+    // --- NEW EMAILJS SUBMIT FUNCTION (Client-Side) ---
+    const handleSubmit = (e) => {
         e.preventDefault();
         setIsSubmitting(true);
         setStatusMessage(null);
 
-        // This points to the Vercel function you created in /api/send-email.js
-        const apiEndpoint = '/api/send-email';
+        // --- CONFIGURATION: PASTE YOUR KEYS HERE ---
+        // 1. Go to https://dashboard.emailjs.com/admin/integration
+        // 2. Copy the "Service ID", "Template ID" and "Public Key"
+        // 3. Paste them below inside the quotes:
+        const serviceId = 'service_3c1888b';   // e.g. 'service_xxxx'
+        const templateId = 'template_19qv3iq'; // e.g. 'template_xxxx'
+        const publicKey = 'YOUR_PUBLIC_KEY';   // e.g. 'user_xxxx' or 'public_key_xxxx'
+        // -------------------------------------------
 
-        try {
-            const response = await fetch(apiEndpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            });
+        // Check if SDK is loaded
+        if (!emailSdkLoaded || !window.emailjs) {
+            setStatusMessage('⚠️ Email service is initializing. Please try again in a moment.');
+            setIsSubmitting(false);
+            return;
+        }
 
-            if (response.ok) {
+        // Prepare the template parameters
+        const templateParams = {
+            from_name: formData.name,
+            from_email: formData.email, // Ensure your EmailJS template uses {{from_email}} in the "Reply To" field
+            subject: formData.subject,
+            message: formData.message,
+        };
+
+        window.emailjs.send(serviceId, templateId, templateParams, publicKey)
+            .then((response) => {
+                console.log('SUCCESS!', response.status, response.text);
                 setStatusMessage('✅ Message sent successfully! I will respond soon.');
                 setFormData({ name: '', email: '', subject: '', message: '' });
-            } else {
-                const errorData = await response.json().catch(() => ({ message: 'Unknown server error.' }));
-                setStatusMessage(`❌ Failed to send message: ${errorData.message || 'Server error occurred.'}`);
-            }
-        } catch (error) {
-            setStatusMessage('❌ Network connection error. Please try again.');
-        } finally {
-            setIsSubmitting(false);
-            setTimeout(() => setStatusMessage(null), 5000);
-        }
+                setTimeout(() => setStatusMessage(null), 5000);
+            })
+            .catch((err) => {
+                console.error('FAILED...', err);
+                setStatusMessage('❌ Failed to send message. Please check your credentials in the code.');
+            })
+            .finally(() => {
+                setIsSubmitting(false);
+            });
     };
     // -----------------------------------------------------
 
@@ -157,7 +187,7 @@ const App = () => {
 
                                 {/* Status Message Display */}
                                 {statusMessage && (
-                                    <div className={`p-4 rounded-xl text-sm ${statusMessage.startsWith('✅') ? 'bg-green-900/50 border border-green-700 text-green-300' : 'bg-red-900/50 border border-red-700 text-red-300'}`}>
+                                    <div className={`p-4 rounded-xl text-sm ${statusMessage.startsWith('✅') ? 'bg-green-900/50 border border-green-700 text-green-300' : (statusMessage.startsWith('⚠️') ? 'bg-yellow-900/50 border border-yellow-700 text-yellow-300' : 'bg-red-900/50 border border-red-700 text-red-300')}`}>
                                         {statusMessage}
                                     </div>
                                 )}
