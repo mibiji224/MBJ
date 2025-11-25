@@ -124,12 +124,13 @@ const About = () => {
         { category: "Backend", items: ["JavaScript", "Python", "PHP", "Java", "Node.js", "REST API"] },
         { category: "Database", items: ["MySQL", "MongoDB", "Firebase", "PostgreSQL"] },
         { category: "Tech Tools", items: ["Git", "GitHub", "VSCode", "Eclipse", "NetBeans"] },
-        { category: "Creative Tools", items: ["Figma", "Adobe Photoshop", "Canva", "Blender", "Procreate", "IbisPaint", "CapCut", "Photopea"] }
+        { category: "Creative Tools", items: ["Figma", "Adobe Photoshop", "Canva", "Blender", "Procreate", "IbisPaint", "CapCut", "Photopea", "DaVinci Resolve"] }
     ];
 
     return (
-        // Changed: h-screen to fit viewport, py-6 for tighter vertical spacing
-        <section className="bg-[#080707] text-white h-screen flex flex-col justify-center py-4 px-4 lg:px-12 font-sans relative overflow-hidden" id="about">
+        // FIXED: Used Flexbox architecture for perfect viewport fitting
+        // h-screen ensures it takes full height, overflow-hidden prevents body scroll
+        <section className="bg-[#080707] text-white h-screen w-full flex flex-col py-4 px-4 lg:px-12 font-sans relative overflow-hidden" id="about">
 
             {/* CSS for custom scrollbar */}
             <style>{`
@@ -139,18 +140,21 @@ const About = () => {
         .modern-scrollbar::-webkit-scrollbar-thumb:hover { background: #ff1f1f; }
       `}</style>
 
-            <div className="max-w-7xl mx-auto w-full h-auto min-h-screen flex flex-col">
+            {/* Main Content Container - Uses h-full to respect parent padding */}
+            <div className="max-w-7xl mx-auto w-full h-full flex flex-col">
 
-                {/* Section Title - Compacted margin */}
-                <div className="mt-6 mb-4 shrink-0">
+                {/* Section Title - shrink-0 prevents it from squishing */}
+                <div className="shrink-0 mb-4 mt-2">
                     <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">About Me</h2>
                     <div className="w-20 h-1 bg-[#db0a0a]"></div>
                 </div>
 
-                {/* Main Grid - Set to fill remaining height */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10 h-[calc(100%-4rem)]">
+                {/* Main Grid - flex-1 min-h-0 is the MAGIC FIX. 
+                    It forces this container to take exactly the remaining height 
+                    and allows internal children to scroll independently. */}
+                <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
 
-                    {/* LEFT COLUMN: EXPERIENCE (Takes up 7 columns) */}
+                    {/* LEFT COLUMN: EXPERIENCE */}
                     <div className="lg:col-span-7 flex flex-col h-full overflow-hidden">
                         <div className="flex items-center gap-3 mb-4 shrink-0">
                             <div className="p-1.5 bg-[#db0a0a]/10 rounded-lg">
@@ -159,8 +163,9 @@ const About = () => {
                             <h3 className="text-xl font-bold text-gray-100">Experience</h3>
                         </div>
 
-                        {/* Scrollable Container - Takes full remaining height */}
-                        <div className="flex-1 overflow-y-auto pr-4 modern-scrollbar bg-[#0f0f0f]/50 rounded-xl p-4 border border-white/5">
+                        {/* Scrollable Container 
+                            Added pb-6 to ensure last item has breathing room at bottom */}
+                        <div className="flex-1 overflow-y-auto pr-4 modern-scrollbar bg-[#0f0f0f]/50 rounded-xl p-4 border border-white/5 pb-6">
                             <ol className="relative border-l border-neutral-800 ml-3 space-y-8">
                                 {experienceData.map((item, index) => (
                                     <li key={index} className="relative ml-8 group">
@@ -203,10 +208,10 @@ const About = () => {
                         </div>
                     </div>
 
-                    {/* RIGHT COLUMN: EDUCATION & SKILLS (Takes up 5 columns) */}
-                    <div className="lg:col-span-5 flex flex-col h-auto min-h-screen overflow-hidden gap-3">
+                    {/* RIGHT COLUMN: EDUCATION & SKILLS */}
+                    <div className="lg:col-span-5 flex flex-col h-full overflow-hidden gap-3">
 
-                        {/* Education Section - Compacted */}
+                        {/* Education Section */}
                         <div className="shrink-0">
                             <div className="flex items-center gap-2 mb-2 shrink-0">
                                 <div className="p-1.5 bg-[#db0a0a]/10 rounded-lg">
@@ -239,7 +244,7 @@ const About = () => {
                         </div>
 
                         {/* Skills Section - Fills remaining space */}
-                        <div className="flex-1 min-h-0 flex flex-col h-full"> {/* Added h-full here */}
+                        <div className="flex-1 min-h-0 flex flex-col">
 
                             {/* Header */}
                             <div className="flex items-center gap-2 mb-2 mt-4 shrink-0">
@@ -250,7 +255,7 @@ const About = () => {
                             </div>
 
                             {/* Scrollable Content Area */}
-                            <div className="flex-1 overflow-y-auto pr-2 modern-scrollbar h-full"> {/* Added h-full here too */}
+                            <div className="flex-1 overflow-y-auto pr-2 modern-scrollbar pb-6">
 
                                 {/* Core Skills Group */}
                                 <div className="mb-3">
@@ -261,7 +266,8 @@ const About = () => {
                                         {coreSkills.map((skill, index) => (
                                             <span
                                                 key={index}
-                                                className="px-3 py-0.5 bg-[#1a1a1a] text-gray-300 text-[10px] font-medium rounded border border-white/5 transition-all duration-200 cursor-default hover:border-[#db0a0a] hover:text-[#db0a0a] hover:bg-[#db0a0a]/8"
+                                                // Increased text size from text-[10px] to text-xs, increased vertical padding to py-1
+                                                className="px-3 py-1 bg-[#1a1a1a] text-gray-300 text-xs font-medium rounded border border-white/5 transition-all duration-200 cursor-default hover:border-[#db0a0a] hover:text-[#db0a0a] hover:bg-[#db0a0a]/8"
                                             >
                                                 {skill}
                                             </span>
@@ -269,7 +275,7 @@ const About = () => {
                                     </div>
                                 </div>
 
-                                {/* Technical Skills Group - Grid Layout */}
+                                {/* Technical Skills Group */}
                                 <div>
                                     <h4 className="text-[12px] font-bold text-gray-400 uppercase tracking-widest  border-l-2 border-[#db0a0a] pl-2 mb-2">
                                         Technical Proficiency
@@ -277,14 +283,16 @@ const About = () => {
                                     <div className="grid grid-cols-2 gap-2">
                                         {technicalSkills.map((group, index) => (
                                             <div key={index} className={`bg-[#0f0f0f] p-2 rounded-lg border border-white/5 hover:border-white/10 transition-colors ${index === technicalSkills.length - 1 ? 'col-span-2' : ''}`}>
-                                                <h5 className="text-[#db0a0a] text-[10px] font-bold uppercase mb-1.5 tracking-wider">
+                                                {/* Increased header text size to text-xs */}
+                                                <h5 className="text-[#db0a0a] text-xs font-bold uppercase mb-1.5 tracking-wider">
                                                     {group.category}
                                                 </h5>
                                                 <div className="flex flex-wrap gap-1">
                                                     {group.items.map((skill, idx) => (
                                                         <span
                                                             key={idx}
-                                                            className="text-[10px] text-gray-300 bg-black/50 px-1.5 py-0.5 rounded border border-white/5 transition-all duration-200 hover:text-[#db0a0a] hover:border-[#db0a0a]"
+                                                            // Increased text size to text-xs and padding to py-1
+                                                            className="text-xs text-gray-300 bg-black/50 px-2 py-1 rounded border border-white/5 transition-all duration-200 hover:text-[#db0a0a] hover:border-[#db0a0a]"
                                                         >
                                                             {skill}
                                                         </span>

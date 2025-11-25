@@ -3,69 +3,155 @@ import {
   GitBranch, Image as ImageIcon, Layers, Maximize2, Palette,
   PenTool, X, Loader2
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 // ==========================================
-// CUSTOM COMPONENT: IMAGE WITH SMOOTH LOADER
+// 1. CUSTOM COMPONENT: SMART CAROUSEL LOADER
 // ==========================================
-const ImageWithLoader = ({ src, alt, className, containerClassName }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
+const ImageWithLoader = ({ src, alt, className, containerClassName, onClick }) => {
+  // force 'src' into an array (handles both single strings and arrays)
+  const images = Array.isArray(src) ? src : [src];
+  const isMulti = images.length > 1;
+
+  const [loadedCount, setLoadedCount] = useState(0);
+  const [currentSlide, setCurrentSlide] = useState(1);
+  const scrollRef = useRef(null);
+
+  // Determine if we are still loading images
+  const isLoading = loadedCount < images.length;
+
+  // Track scroll position to update "1/3" counter
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const scrollLeft = scrollRef.current.scrollLeft;
+      const width = scrollRef.current.offsetWidth;
+      // Calculate index (add 0.5 to round correctly during partial swipes)
+      const index = Math.round(scrollLeft / width) + 1;
+      setCurrentSlide(index);
+    }
+  };
+
+  const handleImageLoad = () => {
+    setLoadedCount((prev) => prev + 1);
+  };
+
+  // --- NEW: ARROW NAVIGATION FUNCTIONS ---
+  const scrollPrev = (e) => {
+    e.stopPropagation(); // Prevent opening modal when clicking arrow
+    if (scrollRef.current) {
+      const width = scrollRef.current.offsetWidth;
+      scrollRef.current.scrollBy({ left: -width, behavior: 'smooth' });
+    }
+  };
+
+  const scrollNext = (e) => {
+    e.stopPropagation(); // Prevent opening modal when clicking arrow
+    if (scrollRef.current) {
+      const width = scrollRef.current.offsetWidth;
+      scrollRef.current.scrollBy({ left: width, behavior: 'smooth' });
+    }
+  };
 
   return (
-    <div className={`relative overflow-hidden bg-[#1a1a1a] ${containerClassName}`}>
-      {/* 1. THE LOADER */}
-      {!isLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center z-10 bg-[#1a1a1a]">
+    <div 
+      className={`relative overflow-hidden bg-[#1a1a1a] group ${containerClassName}`}
+      onClick={onClick}
+    >
+      
+      {/* LOADER SPINNER */}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center z-20 bg-[#1a1a1a]">
           <Loader2 className="w-8 h-8 text-[#db0a0a] animate-spin" />
         </div>
       )}
 
-      {/* 2. THE ACTUAL IMAGE */}
-      <img
-        src={src}
-        alt={alt}
-        onLoad={() => setIsLoaded(true)}
-        className={`${className} transition-opacity duration-700 ease-in-out ${isLoaded ? 'opacity-100 blur-0' : 'opacity-0 blur-sm'
-          }`}
-      />
+      {/* --- NEW: NAVIGATION ARROWS (Only if > 1 image & Loaded) --- */}
+      {isMulti && !isLoading && (
+        <>
+          {/* Left Arrow */}
+          <button
+            onClick={scrollPrev}
+            disabled={currentSlide === 1}
+            className={`absolute left-2 top-1/2 -translate-y-1/2 z-30 p-1.5 rounded-full bg-black/50 text-white backdrop-blur-sm border border-white/10 transition-all duration-200 hover:bg-[#db0a0a] disabled:opacity-0 disabled:pointer-events-none opacity-0 group-hover:opacity-100`}
+            aria-label="Previous image"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+
+          {/* Right Arrow */}
+          <button
+            onClick={scrollNext}
+            disabled={currentSlide === images.length}
+            className={`absolute right-2 top-1/2 -translate-y-1/2 z-30 p-1.5 rounded-full bg-black/50 text-white backdrop-blur-sm border border-white/10 transition-all duration-200 hover:bg-[#db0a0a] disabled:opacity-0 disabled:pointer-events-none opacity-0 group-hover:opacity-100`}
+            aria-label="Next image"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </>
+      )}
+
+      {/* CAROUSEL CONTAINER (CSS Scroll Snap) */}
+      <div 
+        ref={scrollRef}
+        onScroll={handleScroll}
+        className={`flex w-full h-full overflow-x-auto snap-x snap-mandatory scrollbar-hide ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-700`}
+        // Inline style to hide scrollbar across browsers
+        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }} 
+      >
+        {images.map((imgSrc, index) => (
+          <div key={index} className="w-full flex-shrink-0 h-full snap-center relative flex items-center justify-center">
+            <img
+              src={imgSrc}
+              alt={`${alt} - view ${index + 1}`}
+              onLoad={handleImageLoad}
+              className={`${className} block`}
+            />
+          </div>
+        ))}
+      </div>
+
+      {/* COUNTER BADGE (Only shows if > 1 image and finished loading) */}
+      {isMulti && !isLoading && (
+        <div className="absolute bottom-3 right-3 z-30 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-full border border-white/10 pointer-events-none">
+          {currentSlide} / {images.length}
+        </div>
+      )}
     </div>
   );
 };
 
 // ==========================================
-// MAIN COMPONENT
+// 2. MAIN COMPONENT
 // ==========================================
 const Projects = () => {
   const [activeTab, setActiveTab] = useState('dev');
   const [selectedImage, setSelectedImage] = useState(null);
   const [isFullView, setIsFullView] = useState(false);
+  
+  // --- PAGINATION STATE ---
   const [currentDevPage, setCurrentDevPage] = useState(1);
+  const [direction, setDirection] = useState('right');
 
-  // --- NEW: STATE FOR COLUMN COUNT ---
+  // --- MASONRY STATE ---
   const [numCols, setNumCols] = useState(2);
 
-  // --- NEW: LISTEN TO WINDOW SIZE FOR MASONRY COLUMNS ---
+  // --- RESIZE HANDLER FOR MASONRY ---
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
-      // Match your original breakpoints: lg (1024px) -> 5, md (768px) -> 3, else 2
       if (width >= 1024) setNumCols(5);
       else if (width >= 768) setNumCols(3);
       else setNumCols(2);
     };
-
-    // Initial check
-    handleResize();
-
+    handleResize(); // Initial check
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // --- NEW: FUNCTION TO DISTRIBUTE ITEMS LEFT-TO-RIGHT ---
+  // --- MASONRY DISTRIBUTOR ---
   const getDistributedColumns = (items) => {
     const columns = Array.from({ length: numCols }, () => []);
     items.forEach((item, index) => {
-      // Index 0 -> Col 0, Index 1 -> Col 1, Index 2 -> Col 2, Index 3 -> Col 0...
       columns[index % numCols].push(item);
     });
     return columns;
@@ -73,10 +159,10 @@ const Projects = () => {
 
   const itemsPerPage = 3;
 
-  // Effect: Lock body scroll when modal is open
+  // Lock body scroll when modal is open
   useEffect(() => {
     if (selectedImage) {
-      setIsFullView(false);
+      setIsFullView(false); // Reset to card view when opening new modal
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -86,8 +172,9 @@ const Projects = () => {
 
 
   // ==========================================
-  // 1. DEVELOPMENT DATA
+  // DATA SECTIONS
   // ==========================================
+  
   const devProjects = [
     {
       id: 1,
@@ -139,26 +226,9 @@ const Projects = () => {
     }
   ];
 
-  // Pagination Logic
-  const indexOfLastItem = currentDevPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentDevProjects = devProjects.slice(indexOfFirstItem, indexOfLastItem);
-  const totalDevPages = Math.ceil(devProjects.length / itemsPerPage);
+  const artProjects = artProjectsData; // Defined at bottom of file
 
-  const paginate = (pageNumber) => setCurrentDevPage(pageNumber);
-  const nextPage = () => setCurrentDevPage((prev) => Math.min(prev + 1, totalDevPages));
-  const prevPage = () => setCurrentDevPage((prev) => Math.max(prev - 1, 1));
-
-
-  // ==========================================
-  // 2. CREATIVE ARTS DATA
-  // ==========================================
-  const artProjects = artProjectsData;
-
-
-  // ==========================================
-  // 3. GRAPHICS DATA
-  // ==========================================
+  // --- FIXED GRAPHICS DATA ---
   const graphicProjects = [
     { 
       title: "STEAM Empower Countdown", 
@@ -195,32 +265,82 @@ const Projects = () => {
       category: "UI Design", 
       tools: "Figma", 
       image: "/graphics/06.jpg" 
+    },
+    // ✅ THIS IS THE FIX: Using an Array [] for multiple images
+    { 
+      title: "Mobile App UI Kit v2", 
+      category: "UI Design", 
+      tools: "Figma", 
+      image: ["/graphics/07.jpg", "/graphics/08.jpg"] 
     }
   ];
+
+  // --- Pagination Logic ---
+  const indexOfLastItem = currentDevPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentDevProjects = devProjects.slice(indexOfFirstItem, indexOfLastItem);
+  const totalDevPages = Math.ceil(devProjects.length / itemsPerPage);
+
+  const paginate = (pageNumber) => {
+    setDirection(pageNumber > currentDevPage ? 'right' : 'left');
+    setCurrentDevPage(pageNumber);
+  };
+  
+  const nextPage = () => {
+    if (currentDevPage < totalDevPages) {
+        setDirection('right');
+        setCurrentDevPage(prev => prev + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentDevPage > 1) {
+        setDirection('left');
+        setCurrentDevPage(prev => prev - 1);
+    }
+  };
+
 
   return (
     <section className="bg-[#080707] min-h-screen text-white pt-10 pb-20 px-2 lg:px-12 font-sans" id="projects">
 
-      {/* CSS for custom scrollbar */}
+      {/* Global Styles for Animations/Scrollbars */}
       <style>{`
         .modern-scrollbar::-webkit-scrollbar { width: 6px; }
         .modern-scrollbar::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
         .modern-scrollbar::-webkit-scrollbar-thumb { background: #db0a0a; border-radius: 4px; }
         .modern-scrollbar::-webkit-scrollbar-thumb:hover { background: #ff1f1f; }
+        
+        .stagger-enter { animation-fill-mode: both; }
+        .perspective-1000 { perspective: 2000px; }
+        
+        .flip-enter-next { animation: flipInNext 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; transform-origin: center; }
+        .flip-enter-prev { animation: flipInPrev 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; transform-origin: center; }
+
+        @keyframes flipInNext {
+            0% { opacity: 0; transform: rotateY(-90deg) scale(0.9); }
+            100% { opacity: 1; transform: rotateY(0deg) scale(1); }
+        }
+        @keyframes flipInPrev {
+            0% { opacity: 0; transform: rotateY(90deg) scale(0.9); }
+            100% { opacity: 1; transform: rotateY(0deg) scale(1); }
+        }
+        
+        /* Hide scrollbar utility */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
 
       <div className="max-w-[1600px] mx-auto">
 
-        {/* HEADER & TABS CONTAINER */}
+        {/* --- HEADER --- */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
-
-          {/* Section Title */}
           <div>
             <h3 className="text-4xl lg:text-4xl font-bold text-white mb-4">Projects</h3>
             <div className="w-20 h-1 bg-[#db0a0a]"></div>
           </div>
 
-          {/* TAB SWITCHER */}
+          {/* --- TABS --- */}
           <div className="bg-[#1a1a1a] p-1.5 rounded-xl inline-flex flex-wrap gap-1 border border-white/5">
             {['dev', 'art', 'graphics'].map((tab) => (
               <button
@@ -240,15 +360,23 @@ const Projects = () => {
           </div>
         </div>
 
-        {/* --- DEVELOPMENT PROJECTS GRID (Standard Grid) --- */}
+        {/* --- DEVELOPMENT TAB --- */}
         {activeTab === 'dev' && (
-          <div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8 animate-in fade-in slide-in-from-right-8 duration-500 key={currentDevPage}">
+          <div className="overflow-hidden min-h-[500px] perspective-1000">
+            <div 
+                key={currentDevPage}
+                className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8 ${direction === 'right' ? 'flip-enter-next' : 'flip-enter-prev'}`}
+            >
               {currentDevProjects.map((project, index) => (
-                <div key={index} className="group bg-[#0f0f0f] border border-white/5 rounded-2xl overflow-hidden hover:border-[#db0a0a]/50 transition-all duration-300 hover:-translate-y-2">
+                <div 
+                    key={project.id} 
+                    style={{ animationDelay: `${index * 150}ms` }}
+                    className="group bg-[#0f0f0f] border border-white/5 rounded-2xl overflow-hidden hover:border-[#db0a0a]/50 transition-all duration-300 hover:-translate-y-2 stagger-enter animate-in fade-in zoom-in-95 duration-500"
+                >
                   <div className="h-48 overflow-hidden relative">
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] to-transparent z-10 opacity-60 pointer-events-none"></div>
-
+                    
+                    {/* Reusing the Smart Component here too */}
                     <ImageWithLoader
                       src={project.image}
                       alt={project.title}
@@ -279,101 +407,58 @@ const Projects = () => {
 
             {/* Pagination Controls */}
             <div className="flex justify-center items-center gap-2 mt-8">
-              <button
-                onClick={prevPage}
-                disabled={currentDevPage === 1}
-                className={`flex items-center justify-center w-10 h-10 rounded-lg border border-white/5 transition-all
-                    ${currentDevPage === 1 ? 'text-gray-600 cursor-not-allowed bg-[#1a1a1a]' : 'text-gray-300 bg-[#1a1a1a] hover:bg-white/5 hover:text-white'}`}
-              >
+              <button onClick={prevPage} disabled={currentDevPage === 1} className={`flex items-center justify-center w-10 h-10 rounded-lg border border-white/5 transition-all ${currentDevPage === 1 ? 'text-gray-600 cursor-not-allowed bg-[#1a1a1a]' : 'text-gray-300 bg-[#1a1a1a] hover:bg-white/5 hover:text-white'}`}>
                 <ChevronLeft className="w-5 h-5" />
               </button>
               {[...Array(totalDevPages)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => paginate(i + 1)}
-                  className={`w-10 h-10 rounded-lg text-sm font-medium border transition-all
-                      ${currentDevPage === i + 1 ? 'bg-[#db0a0a] border-[#db0a0a] text-white' : 'bg-[#1a1a1a] border-white/5 text-gray-300 hover:bg-white/5 hover:text-white'}`}
-                >
+                <button key={i} onClick={() => paginate(i + 1)} className={`w-10 h-10 rounded-lg text-sm font-medium border transition-all ${currentDevPage === i + 1 ? 'bg-[#db0a0a] border-[#db0a0a] text-white scale-110' : 'bg-[#1a1a1a] border-white/5 text-gray-300 hover:bg-white/5 hover:text-white'}`}>
                   {i + 1}
                 </button>
               ))}
-              <button
-                onClick={nextPage}
-                disabled={currentDevPage === totalDevPages}
-                className={`flex items-center justify-center w-10 h-10 rounded-lg border border-white/5 transition-all
-                    ${currentDevPage === totalDevPages ? 'text-gray-600 cursor-not-allowed bg-[#1a1a1a]' : 'text-gray-300 bg-[#1a1a1a] hover:bg-white/5 hover:text-white'}`}
-              >
+              <button onClick={nextPage} disabled={currentDevPage === totalDevPages} className={`flex items-center justify-center w-10 h-10 rounded-lg border border-white/5 transition-all ${currentDevPage === totalDevPages ? 'text-gray-600 cursor-not-allowed bg-[#1a1a1a]' : 'text-gray-300 bg-[#1a1a1a] hover:bg-white/5 hover:text-white'}`}>
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
           </div>
         )}
 
-        {/* --- CREATIVE ARTS (LEFT-TO-RIGHT MASONRY) --- */}
-        {activeTab === 'art' && (
+        {/* --- ARTS & GRAPHICS TABS (Masonry) --- */}
+        {(activeTab === 'art' || activeTab === 'graphics') && (
           <div className="h-[800px] overflow-y-auto modern-scrollbar pr-2">
-            {/* Flex container holding columns */}
             <div className="flex gap-4 items-start animate-in fade-in slide-in-from-bottom-4 duration-500 pb-8">
-
-              {/* Distribute items into buckets and map the columns */}
-              {getDistributedColumns(artProjects).map((columnItems, colIndex) => (
+              
+              {/* Distribute items into buckets based on screen size */}
+              {getDistributedColumns(activeTab === 'art' ? artProjects : graphicProjects).map((columnItems, colIndex) => (
                 <div key={colIndex} className="flex-1 flex flex-col gap-4">
-                  {columnItems.map((art, index) => (
+                  {columnItems.map((item, index) => (
                     <div
-                      key={art.id}
-                      onClick={() => setSelectedImage(art)}
+                      key={index}
+                      onClick={() => setSelectedImage(item)}
                       className="group relative overflow-hidden rounded-xl bg-[#0f0f0f] border border-white/5 cursor-pointer"
                     >
+                      {/* SMART COMPONENT USAGE:
+                         Even in the small masonry card, if 'item.image' is an array, 
+                         the user can swipe it!
+                      */}
                       <ImageWithLoader
-                        src={art.image}
-                        alt={art.title}
+                        src={item.image}
+                        alt={item.title}
                         className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
+                        containerClassName="w-full h-full"
                       />
 
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 z-20">
-                        <span className="text-[#db0a0a] text-[10px] font-bold uppercase tracking-wider mb-1">{art.category}</span>
-                        <h3 className="text-sm font-bold text-white mb-1 leading-tight">{art.title}</h3>
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 z-20 pointer-events-none">
+                        <span className="text-[#db0a0a] text-[10px] font-bold uppercase tracking-wider mb-1">{item.category}</span>
+                        <h3 className="text-sm font-bold text-white mb-1 leading-tight">{item.title}</h3>
                         <div className="flex items-center gap-2 text-[10px] text-gray-400 font-mono border-t border-white/10 pt-2 mt-1">
-                          <ImageIcon className="w-3 h-3" /> {art.tools}
+                          {activeTab === 'art' ? <ImageIcon className="w-3 h-3" /> : <PenTool className="w-3 h-3" />} 
+                          {item.tools}
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
               ))}
-
-            </div>
-          </div>
-        )}
-
-        {/* --- GRAPHICS PROJECTS (LEFT-TO-RIGHT MASONRY) --- */}
-        {activeTab === 'graphics' && (
-          <div className="h-[800px] overflow-y-auto modern-scrollbar pr-2">
-            {/* Flex container holding columns */}
-            <div className="flex gap-4 items-start animate-in fade-in slide-in-from-bottom-4 duration-500 pb-8">
-
-              {getDistributedColumns(graphicProjects).map((columnItems, colIndex) => (
-                <div key={colIndex} className="flex-1 flex flex-col gap-4">
-                  {columnItems.map((graphic, index) => (
-                    <div key={index} className="group relative overflow-hidden rounded-xl bg-[#0f0f0f] border border-white/5">
-                      <ImageWithLoader
-                        src={graphic.image}
-                        alt={graphic.title}
-                        className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-
-                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 z-20">
-                        <span className="text-[#db0a0a] text-[10px] font-bold uppercase tracking-wider mb-1">{graphic.category}</span>
-                        <h3 className="text-sm font-bold text-white mb-1 leading-tight">{graphic.title}</h3>
-                        <div className="flex items-center gap-2 text-[10px] text-gray-400 font-mono border-t border-white/10 pt-2 mt-1">
-                          <PenTool className="w-3 h-3" /> {graphic.tools}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
-
             </div>
           </div>
         )}
@@ -381,14 +466,13 @@ const Projects = () => {
       </div>
 
       {/* ==========================================
-          UPDATED LIGHTBOX MODAL (Dual-View)
+          MODAL / LIGHTBOX
       ========================================== */}
       {selectedImage && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm animate-in fade-in duration-300"
           onClick={() => setSelectedImage(null)}
         >
-          {/* MODAL CONTAINER */}
           <div
             className={`
               bg-[#1a1a1a] border border-white/10 rounded-2xl shadow-2xl overflow-hidden relative transition-all duration-500 ease-in-out
@@ -396,19 +480,18 @@ const Projects = () => {
             `}
             onClick={(e) => e.stopPropagation()}
           >
-
-            {/* CLOSE BUTTON */}
             <button
               onClick={() => setSelectedImage(null)}
-              className="absolute top-3 right-3 z-20 p-1.5 bg-black/50 text-white rounded-full hover:bg-[#db0a0a] transition-colors"
+              className="absolute top-3 right-3 z-30 p-1.5 bg-black/50 text-white rounded-full hover:bg-[#db0a0a] transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
 
-            {/* --- VIEW 1: FULL IMAGE MODE --- */}
             {isFullView ? (
+              /* --- FULL SCREEN MODE --- */
               <div className="relative w-full h-full flex flex-col">
                 <div className="flex-1 bg-black flex items-center justify-center overflow-hidden p-2">
+                  {/* Reusing Smart Component: Pass 'object-contain' so full image fits */}
                   <ImageWithLoader
                     src={selectedImage.image}
                     alt={selectedImage.title}
@@ -427,18 +510,17 @@ const Projects = () => {
                 </div>
               </div>
             ) : (
-              /* --- VIEW 2: CARD DETAILS MODE --- */
+              /* --- CARD DETAILS MODE --- */
               <>
                 <div className="relative h-64 w-full overflow-hidden bg-black group">
+                  {/* Reusing Smart Component */}
                   <ImageWithLoader
                     src={selectedImage.image}
                     alt={selectedImage.title}
                     containerClassName="w-full h-full"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10 pointer-events-none">
-                    <Maximize2 className="text-white w-8 h-8 drop-shadow-lg" />
-                  </div>
+                  {/* Removed the hover overlay with Maximize2 icon here */}
                 </div>
 
                 <div className="p-6">
@@ -449,7 +531,7 @@ const Projects = () => {
                     {selectedImage.title}
                   </h5>
                   <p className="mb-6 text-gray-400 text-sm leading-relaxed">
-                    {selectedImage.description}
+                    {selectedImage.description || "No description provided."}
                     <br />
                     <span className="inline-block mt-3 text-xs font-mono text-gray-500 border border-white/10 px-2 py-1 rounded">
                       Tool: {selectedImage.tools}
