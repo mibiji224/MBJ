@@ -35,7 +35,8 @@ const LiquidBackground = () => {
 
     // Determine index in buffer and apply strength
     const drawRipple = (cx, cy) => {
-      if (cx > 0 && cx < width && cy > 0 && cy < height) {
+      // Ensure we only draw inside the canvas bounds
+      if (cx >= 0 && cx < width && cy >= 0 && cy < height) {
           // Directly modify the buffer immediately
           buffer1[cx + cy * width] = settings.strength;
       }
@@ -76,7 +77,7 @@ const LiquidBackground = () => {
     };
 
     const loop = () => {
-      // FLUID SIMULATION
+      // FLUID SIMULATION: Swap buffers
       const temp = buffer1;
       buffer1 = buffer2;
       buffer2 = temp;
@@ -88,7 +89,7 @@ const LiquidBackground = () => {
       const w = width;
       const h = height;
 
-      // 1. Physics Loop
+      // 1. Physics Loop (Applies only to inner pixels, 1 to w-2, 1 to h-2)
       for (let y = 1; y < h - 1; y++) {
         for (let x = 1; x < w - 1; x++) {
           const i = x + y * w;
@@ -96,29 +97,47 @@ const LiquidBackground = () => {
           // Averaging neighbor pixels to create wave propagation
           const heightVal = (
             (buffer2[i - 1] + buffer2[i + 1] + buffer2[i - w] + buffer2[i + w]) / 2
-          ) - buffer1[i];
+          ) - buffer1[i]; // buffer1 is the next state destination buffer
 
           buffer1[i] = heightVal * damping;
-
-          // 2. Rendering Loop
-          const pixelIndex = i * 4;
-          let r = settings.background[0];
-          const g = settings.background[1]; 
-          const b = settings.background[2]; 
-          const waveHeight = buffer1[i];
-
-          if (waveHeight > 0) {
-             r += waveHeight * 2; 
-          }
-
-          data[pixelIndex] = r < 0 ? 0 : r > 255 ? 255 : r;
-          data[pixelIndex + 1] = g; 
-          data[pixelIndex + 2] = b; 
-
-          // Alpha based on wave height
-          const alpha = Math.min(255, Math.max(0, waveHeight * 10));
-          data[pixelIndex + 3] = alpha; 
         }
+      }
+
+      // ** FIX HERE **: Explicitly clear the borders of the NEW STATE BUFFER (buffer1)
+      // This eliminates the "stuck" red strokes on the edges.
+      for (let x = 0; x < w; x++) {
+          buffer1[x] = 0;           // Top border (y=0)
+          buffer1[x + (h - 1) * w] = 0; // Bottom border (y=h-1)
+      }
+      for (let y = 1; y < h - 1; y++) {
+          buffer1[y * w] = 0;       // Left border (x=0)
+          buffer1[w - 1 + y * w] = 0; // Right border (x=w-1)
+      }
+
+
+      // 2. Rendering Loop (Process ALL pixels 0 to w-1, 0 to h-1)
+      for (let y = 0; y < h; y++) {
+          for (let x = 0; x < w; x++) {
+              const i = x + y * w;
+              const pixelIndex = i * 4;
+              const waveHeight = buffer1[i]; // Use the fully updated buffer1
+
+              let r = settings.background[0];
+              const g = settings.background[1]; 
+              const b = settings.background[2]; 
+
+              if (waveHeight > 0) {
+                  r += waveHeight * 2; 
+              }
+
+              data[pixelIndex] = r < 0 ? 0 : r > 255 ? 255 : r;
+              data[pixelIndex + 1] = g; 
+              data[pixelIndex + 2] = b; 
+
+              // Alpha based on wave height
+              const alpha = Math.min(255, Math.max(0, waveHeight * 10));
+              data[pixelIndex + 3] = alpha; 
+          }
       }
 
       ctx.putImageData(imgData, 0, 0);
