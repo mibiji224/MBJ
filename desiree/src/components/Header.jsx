@@ -65,7 +65,7 @@ function Head() {
             className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ease-in-out font-['Poppins'] ${
                 isScrolled 
                     ? 'bg-black/70 backdrop-blur-lg py-3 shadow-lg shadow-[#db0a0a]/5' 
-                    : 'bg-transparent py-6'
+                    : 'bg-transparent py-3'
             }`}
         >
             {/* ALIGNMENT FIX: 
@@ -73,7 +73,7 @@ function Head() {
                - 'justify-between' pushes Logo to far left and Nav to far right.
                - 'px-6 lg:px-16' ensures it sits close to the edge but not touching it.
             */}
-            <div className="w-full flex justify-between items-center px-3 lg:px-16">
+            <div className="w-full flex justify-between items-center px-1 lg:px-10">
                 
                 {/* --- LOGO --- */}
                 <a href="#home" onClick={(e) => handleNavClick(e, '#home')} className="text-3xl md:text-4xl font-black text-white tracking-tighter group flex items-center gap-1 select-none">

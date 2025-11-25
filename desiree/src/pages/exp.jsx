@@ -129,7 +129,7 @@ const About = () => {
 
     return (
         // Changed: h-screen to fit viewport, py-6 for tighter vertical spacing
-        <section className="bg-[#080707] text-white h-screen flex flex-col justify-center py-6 px-4 lg:px-12 font-sans relative overflow-hidden" id="about">
+        <section className="bg-[#080707] text-white h-screen flex flex-col justify-center py-4 px-4 lg:px-12 font-sans relative overflow-hidden" id="about">
 
             {/* CSS for custom scrollbar */}
             <style>{`
@@ -139,12 +139,12 @@ const About = () => {
         .modern-scrollbar::-webkit-scrollbar-thumb:hover { background: #ff1f1f; }
       `}</style>
 
-            <div className="max-w-7xl mx-auto w-full h-full flex flex-col">
+            <div className="max-w-7xl mx-auto w-full h-auto min-h-screen flex flex-col">
 
                 {/* Section Title - Compacted margin */}
-                <div className="mb-4 shrink-0">
-                    <h2 className="text-3xl lg:text-4xl font-bold text-white mb-2">About Me</h2>
-                    <div className="w-16 h-1 bg-[#db0a0a]"></div>
+                <div className="mt-6 mb-4 shrink-0">
+                    <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">About Me</h2>
+                    <div className="w-20 h-1 bg-[#db0a0a]"></div>
                 </div>
 
                 {/* Main Grid - Set to fill remaining height */}
@@ -204,11 +204,11 @@ const About = () => {
                     </div>
 
                     {/* RIGHT COLUMN: EDUCATION & SKILLS (Takes up 5 columns) */}
-                    <div className="lg:col-span-5 flex flex-col h-full overflow-hidden gap-3">
+                    <div className="lg:col-span-5 flex flex-col h-auto min-h-screen overflow-hidden gap-3">
 
                         {/* Education Section - Compacted */}
                         <div className="shrink-0">
-                            <div className="flex items-center gap-2 mb-2">
+                            <div className="flex items-center gap-2 mb-2 shrink-0">
                                 <div className="p-1.5 bg-[#db0a0a]/10 rounded-lg">
                                     <GraduationCap className="w-4 h-4 text-[#db0a0a]" />
                                 </div>
@@ -239,15 +239,19 @@ const About = () => {
                         </div>
 
                         {/* Skills Section - Fills remaining space */}
-                        <div className="flex-1 min-h-0 flex flex-col">
-                            <div className="flex items-center gap-2 mb-2 shrink-0">
+                        <div className="flex-1 min-h-0 flex flex-col h-full"> {/* Added h-full here */}
+
+                            {/* Header */}
+                            <div className="flex items-center gap-2 mb-2 mt-4 shrink-0">
                                 <div className="p-1.5 bg-[#db0a0a]/10 rounded-lg">
                                     <Code className="w-4 h-4 text-[#db0a0a]" />
                                 </div>
                                 <h3 className="text-lg font-bold text-gray-100">Skills</h3>
                             </div>
 
-                            <div className="flex-1 overflow-y-auto pr-2 modern-scrollbar">
+                            {/* Scrollable Content Area */}
+                            <div className="flex-1 overflow-y-auto pr-2 modern-scrollbar h-full"> {/* Added h-full here too */}
+
                                 {/* Core Skills Group */}
                                 <div className="mb-3">
                                     <h4 className="text-[12px] font-bold text-gray-400 uppercase tracking-widest mb-2 border-l-2 border-[#db0a0a] pl-2">
@@ -267,7 +271,7 @@ const About = () => {
 
                                 {/* Technical Skills Group - Grid Layout */}
                                 <div>
-                                    <h4 className="text-[12px] font-bold text-gray-400 uppercase tracking-widest mb-2 border-l-2 border-[#db0a0a] pl-2">
+                                    <h4 className="text-[12px] font-bold text-gray-400 uppercase tracking-widest  border-l-2 border-[#db0a0a] pl-2 mb-2">
                                         Technical Proficiency
                                     </h4>
                                     <div className="grid grid-cols-2 gap-2">

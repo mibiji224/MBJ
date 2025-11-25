@@ -170,7 +170,7 @@ const Projects = () => {
   ];
 
   return (
-    <section className="bg-[#080707] min-h-screen text-white pt-4 pb-20 px-2 lg:px-12 font-sans" id="projects">
+    <section className="bg-[#080707] min-h-screen text-white pt-10 pb-20 px-2 lg:px-12 font-sans" id="projects">
 
       {/* CSS for custom scrollbar */}
       <style>{`
@@ -790,13 +790,5 @@ const artProjectsData = [
     description: "Description for artwork 041...",
     tools: "Tool Used",
     image: "/arts/0041.jpg"
-  },
-  {
-    id: "art-42",
-    title: "Project Title 042",
-    category: "Category Here",
-    description: "Description for artwork 042...",
-    tools: "Tool Used",
-    image: "/arts/0042.jpg"
   }
 ];
