@@ -4,19 +4,13 @@ const LiquidBackground = () => {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
 
-  // TRACKING REFS
-  // where the mouse actually is
-  const targetPos = useRef({ x: null, y: null }); 
-  // where the "stabilized brush" is currently
-  const currentPos = useRef({ x: null, y: null }); 
+  // Track the previous position to draw lines between frames (prevents gaps on fast movement)
+  const lastPos = useRef({ x: null, y: null });
 
   const settings = {
     damping: 0.96,
-    strength: 1000,
+    strength: 1000, // Impact strength
     background: [8, 7, 7],
-    // NEW: Stabilizer (0.01 = super slow/smooth, 1.0 = no smoothing)
-    // 0.15 provides a nice "weighted" feel.
-    smoothing: 0.15 
   };
 
   useEffect(() => {
@@ -26,9 +20,10 @@ const LiquidBackground = () => {
     let width, height;
     let buffer1 = [];
     let buffer2 = [];
+    
+    const scaleFactor = 0.5; // Resolution scaling
 
     const resize = () => {
-      const scaleFactor = 0.5;
       width = Math.ceil(window.innerWidth * scaleFactor);
       height = Math.ceil(window.innerHeight * scaleFactor);
       canvas.width = width;
@@ -38,67 +33,50 @@ const LiquidBackground = () => {
       buffer2 = new Int16Array(size);
     };
 
+    // Determine index in buffer and apply strength
     const drawRipple = (cx, cy) => {
       if (cx > 0 && cx < width && cy > 0 && cy < height) {
+          // Directly modify the buffer immediately
           buffer1[cx + cy * width] = settings.strength;
       }
     };
 
-    // 1. UPDATE TARGET ONLY (No drawing here)
-    const updateTarget = (clientX, clientY) => {
-      const scaleFactor = 0.5;
-      targetPos.current = {
-        x: Math.floor(clientX * scaleFactor),
-        y: Math.floor(clientY * scaleFactor)
-      };
+    // REAL-TIME HANDLING
+    const processInput = (clientX, clientY) => {
+      const x = Math.floor(clientX * scaleFactor);
+      const y = Math.floor(clientY * scaleFactor);
+
+      // If we have a previous position, interpolate a line to prevent gaps
+      if (lastPos.current.x !== null) {
+        const dx = x - lastPos.current.x;
+        const dy = y - lastPos.current.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const steps = Math.ceil(distance);
+
+        for (let i = 0; i < steps; i++) {
+          const t = i / steps;
+          const lerpX = Math.floor(lastPos.current.x + dx * t);
+          const lerpY = Math.floor(lastPos.current.y + dy * t);
+          drawRipple(lerpX, lerpY);
+        }
+      }
+
+      // Draw at current position
+      drawRipple(x, y);
+      
+      // Update last position
+      lastPos.current = { x, y };
     };
 
-    const handleMouseMove = (e) => updateTarget(e.clientX, e.clientY);
+    const handleMouseMove = (e) => processInput(e.clientX, e.clientY);
     
     const handleTouchMove = (e) => {
       const touch = e.touches[0];
-      updateTarget(touch.clientX, touch.clientY);
+      processInput(touch.clientX, touch.clientY);
     };
 
     const loop = () => {
-      // 2. CALCULATE STABILIZED MOVEMENT
-      // We do the drawing logic INSIDE the loop now, not the event listener.
-      if (targetPos.current.x !== null && currentPos.current.x !== null) {
-        const target = targetPos.current;
-        const current = currentPos.current;
-
-        // Calculate distance to target
-        const dx = target.x - current.x;
-        const dy = target.y - current.y;
-
-        // Only draw if we are far enough away to matter (optimization)
-        if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) {
-          // Move current position towards target by smoothing factor
-          const nextX = current.x + dx * settings.smoothing;
-          const nextY = current.y + dy * settings.smoothing;
-
-          // Draw line between PREVIOUS stabilized pos and NEW stabilized pos
-          const drawDx = nextX - current.x;
-          const drawDy = nextY - current.y;
-          const distance = Math.sqrt(drawDx * drawDx + drawDy * drawDy);
-          const steps = Math.ceil(distance);
-
-          for (let i = 0; i < steps; i++) {
-            const t = i / steps;
-            const lerpX = Math.floor(current.x + drawDx * t);
-            const lerpY = Math.floor(current.y + drawDy * t);
-            drawRipple(lerpX, lerpY);
-          }
-
-          // Update current position
-          currentPos.current = { x: nextX, y: nextY };
-        }
-      } else if (targetPos.current.x !== null && currentPos.current.x === null) {
-        // First frame logic: Snap directly to target so we don't streak from (0,0)
-        currentPos.current = { ...targetPos.current };
-      }
-
-      // 3. FLUID SIMULATION
+      // FLUID SIMULATION
       const temp = buffer1;
       buffer1 = buffer2;
       buffer2 = temp;
@@ -110,20 +88,19 @@ const LiquidBackground = () => {
       const w = width;
       const h = height;
 
-      // Boundary checks
-      for (let x = 0; x < w; x++) { buffer1[x] = 0; buffer1[(h - 1) * w + x] = 0; }
-      for (let y = 0; y < h; y++) { buffer1[y * w] = 0; buffer1[y * w + (w - 1)] = 0; }
-
+      // 1. Physics Loop
       for (let y = 1; y < h - 1; y++) {
         for (let x = 1; x < w - 1; x++) {
           const i = x + y * w;
+          
+          // Averaging neighbor pixels to create wave propagation
           const heightVal = (
             (buffer2[i - 1] + buffer2[i + 1] + buffer2[i - w] + buffer2[i + w]) / 2
           ) - buffer1[i];
 
           buffer1[i] = heightVal * damping;
 
-          // RENDER
+          // 2. Rendering Loop
           const pixelIndex = i * 4;
           let r = settings.background[0];
           const g = settings.background[1]; 
@@ -138,7 +115,7 @@ const LiquidBackground = () => {
           data[pixelIndex + 1] = g; 
           data[pixelIndex + 2] = b; 
 
-          // Dynamic Alpha (Fade out)
+          // Alpha based on wave height
           const alpha = Math.min(255, Math.max(0, waveHeight * 10));
           data[pixelIndex + 3] = alpha; 
         }
@@ -154,9 +131,7 @@ const LiquidBackground = () => {
     window.addEventListener('touchmove', handleTouchMove);
     
     const handleMouseLeave = () => { 
-      // Reset both on leave so the next entry snaps (preventing streaks)
-      targetPos.current = { x: null, y: null }; 
-      currentPos.current = { x: null, y: null };
+      lastPos.current = { x: null, y: null };
     };
     document.addEventListener('mouseleave', handleMouseLeave);
 
@@ -185,5 +160,3 @@ const LiquidBackground = () => {
 };
 
 export default LiquidBackground;
-
-//final na final na okei
