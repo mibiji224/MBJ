@@ -101,7 +101,7 @@ function Home() {
                     <p className="text-gray-400 text-sm sm:text-base lg:text-lg leading-relaxed max-w-lg lg:max-w-2xl mt-6 mb-8 lg:mt-8 lg:mb-10 px-2 lg:px-0">
                         A driven leader with a curious mind for the ever-evolving world of technology and innovation.
                         I blend logical problem-solving with creative expression, exploring the intersection of
-                        <span className="text-white font-semibold"> computing and the arts</span>.
+                         computing and the arts.
                     </p>
 
                     {/* Buttons & Socials Area */}
