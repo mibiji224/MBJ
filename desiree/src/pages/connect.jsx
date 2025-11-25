@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Mail, MapPin, Github, Linkedin, Instagram, ArrowRight } from 'lucide-react';
+import { ArrowRight, Github, Instagram, Linkedin, Mail, MapPin } from 'lucide-react';
+import { useState } from 'react';
 
 // Custom TikTok icon since Lucide doesn't include it by default.
 const TikTokIcon = (props) => (
@@ -83,7 +83,7 @@ const App = () => {
 
     return (
         // Added min-h-screen and bg-neutral-950 for the preview to look correct
-        <div className="min-h-screen bg-neutral-950 flex items-center justify-center">
+        <div className="min-h-screen bg-transparent flex items-center justify-center">
             <section className="w-full text-white py-20 px-6 lg:px-12 font-sans relative overflow-hidden" id="connect">
 
                 <div className="max-w-[1400px] mx-auto">
