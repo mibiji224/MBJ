@@ -68,7 +68,7 @@ const App = () => {
         // 3. Paste them below inside the quotes:
         const serviceId = 'service_3c1888b';   // e.g. 'service_xxxx'
         const templateId = 'template_19qv3iq'; // e.g. 'template_xxxx'
-        const publicKey = 'YOUR_PUBLIC_KEY';   // e.g. 'user_xxxx' or 'public_key_xxxx'
+        const publicKey = 'YLcA9TfnfUuRN0OQ3y';   // e.g. 'user_xxxx' or 'public_key_xxxx'
         // -------------------------------------------
 
         // Check if SDK is loaded
