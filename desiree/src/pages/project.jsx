@@ -160,13 +160,42 @@ const Projects = () => {
   // 3. GRAPHICS DATA
   // ==========================================
   const graphicProjects = [
-    { title: "University Mascot Redesign", category: "Branding", tools: "IbisPaint", image: "https://placehold.co/400x400/1a1a1a/db0a0a?text=Mascot+Branding" },
-    { title: "Tech Summit Poster", category: "Event Collateral", tools: "Adobe Illustrator", image: "https://placehold.co/400x600/1a1a1a/db0a0a?text=Event+Poster" },
-    { title: "Student Council Social Media Kit", category: "Social Media", tools: "Canva / Figma", image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=Social+Kit" },
-    { title: "Annual Report Layout", category: "Editorial", tools: "InDesign", image: "https://placehold.co/400x500/1a1a1a/db0a0a?text=Report" },
-    { title: "Coffee Shop Logo", category: "Logo Design", tools: "Illustrator", image: "https://placehold.co/500x500/1a1a1a/db0a0a?text=Logo" },
-    { title: "Mobile App UI Kit", category: "UI Design", tools: "Figma", image: "https://placehold.co/300x600/1a1a1a/db0a0a?text=UI+Kit" },
-    { title: "Music Festival Banner", category: "Advertising", tools: "Photoshop", image: "https://placehold.co/600x200/1a1a1a/db0a0a?text=Banner" }
+    { 
+      title: "STEAM Empower Countdown", 
+      category: "Event Branding", 
+      tools: "Canva", 
+      image: "/graphics/01.jpg" 
+    },
+    { 
+      title: "Girl Up Davao Board Meeting", 
+      category: "Publication Material", 
+      tools: "Canva", 
+      image: "/graphics/02.jpg" 
+    },
+    { 
+      title: "Board Members of Girl Up Davao", 
+      category: "Social Media", 
+      tools: "Canva", 
+      image: "/graphics/03.jpg" 
+    },
+    { 
+      title: "Annual Report Layout", 
+      category: "Editorial", 
+      tools: "InDesign", 
+      image: "/graphics/04.png" 
+    },
+    { 
+      title: "Coffee Shop Logo", 
+      category: "Logo Design", 
+      tools: "Illustrator", 
+      image: "/graphics/05.jpg" 
+    },
+    { 
+      title: "Mobile App UI Kit", 
+      category: "UI Design", 
+      tools: "Figma", 
+      image: "/graphics/06.jpg" 
+    }
   ];
 
   return (

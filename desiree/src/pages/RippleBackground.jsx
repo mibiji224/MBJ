@@ -1,15 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 
-const RippleBackground = () => {
+const LiquidBackground = () => {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
+  const lastMousePos = useRef({ x: null, y: null });
 
-  // Configuration
   const settings = {
-    damping: 0.99, // How fast ripples fade (0.9 to 0.99)
-    shimmer: 5,    // Intensity of the ripple brightness
-    color: [219, 10, 10], // Your Red color #db0a0a in RGB
-    background: [8, 7, 7], // Your Black background #080707 in RGB
+    damping: 0.96,        
+    radius: 1,            // CHANGED: Reduced from 3 to 1 for a thin, sharp point
+    strength: 800,        // CHANGED: Increased strength (400 -> 800) so the thin line is still visible
+    background: [8, 7, 7] 
   };
 
   useEffect(() => {
@@ -17,51 +17,84 @@ const RippleBackground = () => {
     const ctx = canvas.getContext('2d');
     
     let width, height;
-    let halfWidth, halfHeight;
-    
-    // We use two buffers to calculate the wave physics
-    // buffer1: current state, buffer2: previous state
     let buffer1 = [];
     let buffer2 = [];
-    let fps = 0;
 
-    // Resize handler
     const resize = () => {
-      // We scale the internal resolution down for performance.
-      // A 1:1 pixel ratio is too heavy for CPU fluid sim.
-      // 0.2 to 0.4 looks "soft" and runs fast.
+      // 0.25 scale is still good for performance, but the radius: 1 makes it sharp
       const scaleFactor = 0.25; 
       
       width = Math.ceil(window.innerWidth * scaleFactor);
       height = Math.ceil(window.innerHeight * scaleFactor);
-      halfWidth = width >> 1;
-      halfHeight = height >> 1;
 
       canvas.width = width;
       canvas.height = height;
 
-      // Initialize buffers with 0
-      const size = width * (height + 2) * 2; // *2 for safety
-      buffer1 = new Array(size).fill(0);
-      buffer2 = new Array(size).fill(0);
+      const size = width * height;
+      buffer1 = new Int16Array(size);
+      buffer2 = new Int16Array(size);
     };
 
-    // Mouse interaction
-    const handleMouseMove = (e) => {
-      const scaleFactor = 0.25; // Must match resize scale
-      const x = Math.floor(e.clientX * scaleFactor);
-      const y = Math.floor(e.clientY * scaleFactor);
-      
-      // Trigger a ripple at mouse position
-      // We modify the PREVIOUS buffer to start the wave
-      if (x > 0 && x < width && y > 0 && y < height) {
-        buffer1[x + y * width] = 500; // Ripple strength
+    const drawRipple = (cx, cy) => {
+      const r = settings.radius;
+      // Loop is much smaller now (creating a thinner line)
+      for (let y = cy - r; y <= cy + r; y++) {
+        for (let x = cx - r; x <= cx + r; x++) {
+          if (x > 1 && x < width - 1 && y > 1 && y < height - 1) {
+             // We removed the circle math for radius 1 because it's basically a single pixel/cross
+             buffer1[x + y * width] = settings.strength;
+          }
+        }
       }
     };
 
-    // Main Animation Loop
+    const handleMouseMove = (e) => {
+      const scaleFactor = 0.25;
+      const x = Math.floor(e.clientX * scaleFactor);
+      const y = Math.floor(e.clientY * scaleFactor);
+
+      if (lastMousePos.current.x !== null) {
+        const dx = x - lastMousePos.current.x;
+        const dy = y - lastMousePos.current.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const steps = Math.ceil(distance); // More steps ensures the thin line doesn't break
+        
+        for (let i = 0; i < steps; i++) {
+          const t = i / steps;
+          const lerpX = Math.floor(lastMousePos.current.x + dx * t);
+          const lerpY = Math.floor(lastMousePos.current.y + dy * t);
+          drawRipple(lerpX, lerpY);
+        }
+      } else {
+        drawRipple(x, y);
+      }
+      lastMousePos.current = { x, y };
+    };
+
+    const handleTouchMove = (e) => {
+      const scaleFactor = 0.25;
+      const touch = e.touches[0];
+      const x = Math.floor(touch.clientX * scaleFactor);
+      const y = Math.floor(touch.clientY * scaleFactor);
+      
+      if (lastMousePos.current.x !== null) {
+          const dx = x - lastMousePos.current.x;
+          const dy = y - lastMousePos.current.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const steps = Math.ceil(distance);
+          for (let i = 0; i < steps; i++) {
+            const t = i / steps;
+            const lerpX = Math.floor(lastMousePos.current.x + dx * t);
+            const lerpY = Math.floor(lastMousePos.current.y + dy * t);
+            drawRipple(lerpX, lerpY);
+          }
+      } else {
+          drawRipple(x, y);
+      }
+      lastMousePos.current = { x, y };
+    };
+
     const loop = () => {
-      // Swap buffers
       const temp = buffer1;
       buffer1 = buffer2;
       buffer2 = temp;
@@ -69,50 +102,52 @@ const RippleBackground = () => {
       const imgData = ctx.getImageData(0, 0, width, height);
       const data = imgData.data;
 
-      // Wave Propagation Algorithm
-      // Loop through every pixel (skipping edges)
-      for (let y = 1; y < height - 1; y++) {
-        for (let x = 1; x < width - 1; x++) {
-          
-          const i = x + y * width;
-          
-          // The magic physics formula:
-          // Calculate velocity based on neighbors (up, down, left, right)
-          buffer1[i] = (
-            (buffer2[i - 1] +
-             buffer2[i + 1] +
-             buffer2[i - width] +
-             buffer2[i + width]) >> 1
+      const damping = settings.damping;
+      const w = width;
+      const h = height;
+
+      for (let x = 0; x < w; x++) { buffer1[x] = 0; buffer1[(h - 1) * w + x] = 0; }
+      for (let y = 0; y < h; y++) { buffer1[y * w] = 0; buffer1[y * w + (w - 1)] = 0; }
+
+      for (let y = 1; y < h - 1; y++) {
+        for (let x = 1; x < w - 1; x++) {
+          const i = x + y * w;
+
+          const heightVal = (
+            (buffer2[i - 1] + buffer2[i + 1] + buffer2[i - w] + buffer2[i + w]) / 2
           ) - buffer1[i];
 
-          // Apply damping (loss of energy)
-          buffer1[i] -= buffer1[i] >> 5; // Optimized bitwise damping
+          buffer1[i] = heightVal * damping;
 
-          // Render: Map wave height to pixel color
-          // 0 is calm, positive/negative is wave height
-          let waveHeight = buffer1[i];
-          
-          // Calculate index in the pixel array (RGBA)
+          // 3D Rendering Logic
+          const xOffset = buffer1[i - 1] - buffer1[i + 1];
+          let shading = xOffset; 
+
           const pixelIndex = i * 4;
-          
-          // If water is calm, draw background. If turbulent, add color.
-          if (waveHeight === 0) {
-             data[pixelIndex] = settings.background[0];     // R
-             data[pixelIndex + 1] = settings.background[1]; // G
-             data[pixelIndex + 2] = settings.background[2]; // B
-             data[pixelIndex + 3] = 255; // Alpha
-          } else {
-             // Calculate intensity based on wave height
-             // We offset the ripple to create a "shading" effect
-             const offset = 1024 - waveHeight;
-             
-             // Mix the background with the ripple color
-             // This creates the visual "highlight" on the wave crests
-             data[pixelIndex] = settings.background[0] + (waveHeight * settings.shimmer); 
-             data[pixelIndex + 1] = settings.background[1]; 
-             data[pixelIndex + 2] = settings.background[2]; 
-             data[pixelIndex + 3] = 255;
+          let r = settings.background[0];
+          let g = settings.background[1];
+          let b = settings.background[2];
+
+          const waveHeight = buffer1[i];
+          if (waveHeight > 0) {
+             r += waveHeight; 
           }
+
+          if (shading > 0) {
+            const shine = shading * 8; 
+            r += shine;       
+            g += shine * 0.5; 
+            b += shine * 0.5; 
+          } 
+          else if (shading < 0) {
+             const shadow = -shading * 2;
+             r -= shadow; 
+          }
+
+          data[pixelIndex] = r < 0 ? 0 : r > 255 ? 255 : r;
+          data[pixelIndex + 1] = g < 0 ? 0 : g > 255 ? 255 : g;
+          data[pixelIndex + 2] = b < 0 ? 0 : b > 255 ? 255 : b;
+          data[pixelIndex + 3] = 255; 
         }
       }
 
@@ -120,22 +155,21 @@ const RippleBackground = () => {
       animationRef.current = requestAnimationFrame(loop);
     };
 
-    // Init
+    resize();
     window.addEventListener('resize', resize);
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchmove', handleTouchMove);
     
-    // Add touch support for mobile
-    window.addEventListener('touchmove', (e) => {
-        handleMouseMove(e.touches[0]);
-    });
+    const handleMouseLeave = () => { lastMousePos.current = { x: null, y: null }; };
+    document.addEventListener('mouseleave', handleMouseLeave);
 
-    resize();
     loop();
 
-    // Cleanup
     return () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('mouseleave', handleMouseLeave);
       cancelAnimationFrame(animationRef.current);
     };
   }, []);
@@ -143,15 +177,15 @@ const RippleBackground = () => {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full -z-1 pointer-events-none"
+      className="fixed top-0 left-0 w-full h-full pointer-events-none"
       style={{ 
-          // Ensures the canvas sits behind everything but visible
-          zIndex: -1,
-          // Smooths out the low-res pixels for a 'liquid' look
-          imageRendering: 'auto' 
+        zIndex: -1,
+        // Reduced blur so the thin line doesn't disappear
+        filter: 'blur(1px)', 
+        opacity: 0.8
       }}
     />
   );
 };
 
-export default RippleBackground;
+export default LiquidBackground;
