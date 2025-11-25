@@ -2,6 +2,8 @@ import { useEffect, useState, useLayoutEffect, useRef } from 'react';
 import RippleBackground from './RippleBackground';
 import gsap from 'gsap';
 
+import profileImage from '/src/assets/mbj.jpg';
+
 function Home() {
     // Reference for GSAP Scope
     const comp = useRef(null);
@@ -171,7 +173,7 @@ function Home() {
                     <div className="relative z-10 animate-[float_6s_ease-in-out_infinite]">
                         <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-[350px] lg:h-[350px] rounded-full p-2 border-2 border-[#db0a0a]/30 bg-[#080707] transition-all duration-500 group-hover:border-[#db0a0a] group-hover:scale-105">
                             <img
-                                src="./src/assets/mbj.jpg"
+                                src={profileImage}
                                 alt="Desiree"
                                 className="w-full h-full object-cover rounded-full shadow-[0_0_15px_rgba(219,10,10,0.2)] group-hover:shadow-[0_0_50px_#db0a0a] transition-all duration-500"
                             />
