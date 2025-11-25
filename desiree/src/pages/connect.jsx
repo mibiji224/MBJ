@@ -62,13 +62,10 @@ const App = () => {
         setIsSubmitting(true);
         setStatusMessage(null);
 
-        // --- CONFIGURATION: PASTE YOUR KEYS HERE ---
-        // 1. Go to https://dashboard.emailjs.com/admin/integration
-        // 2. Copy the "Service ID", "Template ID" and "Public Key"
-        // 3. Paste them below inside the quotes:
-        const serviceId = 'service_3c1888b';   // e.g. 'service_xxxx'
-        const templateId = 'template_19qv3iq'; // e.g. 'template_xxxx'
-        const publicKey = 'YLcA9TfnfUuRN0OQ3y';   // e.g. 'user_xxxx' or 'public_key_xxxx'
+        // --- CONFIGURATION: YOUR KEYS ---
+        const serviceId = 'service_3c1888b'; 
+        const templateId = 'template_19qv3iq';
+        const publicKey = 'YLcA9TfnfUuRN0OQ3y'; 
         // -------------------------------------------
 
         // Check if SDK is loaded
