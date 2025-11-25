@@ -1,7 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useLayoutEffect, useRef } from 'react';
 import RippleBackground from './RippleBackground';
+import gsap from 'gsap';
 
 function Home() {
+    // Reference for GSAP Scope
+    const comp = useRef(null);
+
     // 1. Define your roles here
     const roles = [
         "a Web Developer",
@@ -22,9 +26,35 @@ function Home() {
         return () => clearInterval(interval);
     }, [roles.length]);
 
+    // 4. GSAP ENTRANCE ANIMATION
+    useLayoutEffect(() => {
+        let ctx = gsap.context(() => {
+            const t1 = gsap.timeline();
+
+            // Animate all elements with the class 'gsap-reveal'
+            t1.from(".gsap-reveal", {
+                y: 50,          // Move from 50px down
+                opacity: 0,     // Start invisible
+                duration: 1,    // Takes 1 second
+                stagger: 0.1,   // Delay 0.1s between each element
+                ease: "power3.out", // Smooth deceleration
+                delay: 0.2      // Wait a tiny bit after load
+            })
+            // Animate the image coming from the right
+            .from(".gsap-image-reveal", {
+                x: 100,
+                opacity: 0,
+                duration: 1.2,
+                ease: "power3.out"
+            }, "-=1"); // Start this 1 second before the text finishes (overlap)
+
+        }, comp); // Scope to this component
+
+        return () => ctx.revert(); // Cleanup on unmount
+    }, []);
+
     return (
-        // Added 100dvh for better mobile browser support
-        <div className="relative min-h-[100dvh] w-full bg-transparent text-white font-['Poppins'] overflow-hidden selection:bg-[#db0a0a] selection:text-black">
+        <div ref={comp} className="relative min-h-[100dvh] w-full bg-transparent text-white font-['Poppins'] overflow-hidden selection:bg-[#db0a0a] selection:text-black">
             <RippleBackground />
 
             {/* --- CUSTOM STYLES & ANIMATIONS --- */}
@@ -53,42 +83,36 @@ function Home() {
 
             {/* --- BACKGROUND ELEMENTS --- */}
             <div className="absolute inset-0 bg-grid z-0 pointer-events-none"></div>
-            {/* Adjusted blur and size for mobile performance */}
             <div className="absolute -bottom-20 -left-20 w-64 h-64 lg:w-96 lg:h-96 bg-[#db0a0a] opacity-20 blur-[100px] lg:blur-[150px] rounded-full z-0"></div>
 
-            {/* Main Container: Added padding top for mobile so it doesn't touch the status bar */}
             <section className="relative z-10 min-h-[100dvh] flex flex-col-reverse lg:flex-row items-center justify-center px-4 sm:px-8 lg:px-20 gap-8 lg:gap-20 py-12 lg:py-0" id="home">
 
                 {/* --- LEFT: TEXT CONTENT --- */}
                 <div className="flex-1 flex flex-col items-center lg:items-start text-center lg:text-left w-full max-w-2xl lg:max-w-none">
 
-                    <span className="text-[#db0a0a] font-bold tracking-widest uppercase text-xs sm:text-sm lg:text-base mb-3 lg:mb-4">
+                    {/* Added gsap-reveal class */}
+                    <span className="gsap-reveal text-[#db0a0a] font-bold tracking-widest uppercase text-xs sm:text-sm lg:text-base mb-3 lg:mb-4 block">
                         Welcome to my Portfolio
                     </span>
 
-                    {/* Adjusted text sizes for smaller screens */}
                     <h1 className="text-4xl sm:text-6xl lg:text-8xl font-bold leading-tight tracking-tight">
-                        Hello, I'm <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#db0a0a] via-red-500 to-white drop-shadow-[0_0_20px_rgba(219,10,10,0.5)]">
+                        {/* Added gsap-reveal class */}
+                        <span className="gsap-reveal block">Hello, I'm</span>
+                        
+                        {/* Added gsap-reveal class */}
+                        <span className="gsap-reveal block text-transparent bg-clip-text bg-gradient-to-r from-[#db0a0a] via-red-500 to-white drop-shadow-[0_0_20px_rgba(219,10,10,0.5)]">
                             Desiree.
                         </span>
                     </h1>
 
                     {/* Animated Role Container */}
-                    <div className="flex flex-col sm:flex-row items-center sm:items-baseline justify-center lg:justify-start gap-2 mt-2 sm:mt-4 text-xl sm:text-3xl lg:text-4xl font-semibold w-full">
+                    {/* Added gsap-reveal class */}
+                    <div className="gsap-reveal flex flex-col sm:flex-row items-center sm:items-baseline justify-center lg:justify-start gap-2 mt-2 sm:mt-4 text-xl sm:text-3xl lg:text-4xl font-semibold w-full">
                         <span className="text-gray-300">I am</span>
-
-                        {/* FIX: added 'relative' and 'flex'.
-                           We use an invisible copy of the text to force the box to be the right size.
-                        */}
                         <div className="relative flex justify-center sm:justify-start sm:pl-2 sm:ml-4">
-                            
-                            {/* THE GHOST: Invisible text that sets the correct height/baseline */}
                             <span className="invisible opacity-0" aria-hidden="true">
                                 a Web Developer
                             </span>
-
-                            {/* THE REAL TEXT: Floating on top of the ghost */}
                             <span
                                 key={currentRoleIndex}
                                 className="absolute left-0 sm:left-auto top-0 text-[#db0a0a] drop-shadow-[0_0_10px_rgba(219,10,10,0.8)] animate-[textCycle_4s_ease-in-out_forwards] whitespace-nowrap"
@@ -98,14 +122,16 @@ function Home() {
                         </div>
                     </div>
 
-                    <p className="text-gray-400 text-sm sm:text-base lg:text-lg leading-relaxed max-w-lg lg:max-w-2xl mt-6 mb-8 lg:mt-8 lg:mb-10 px-2 lg:px-0">
+                    {/* Added gsap-reveal class */}
+                    <p className="gsap-reveal text-gray-400 text-sm sm:text-base lg:text-lg leading-relaxed max-w-lg lg:max-w-2xl mt-6 mb-8 lg:mt-8 lg:mb-10 px-2 lg:px-0">
                         A driven leader with a curious mind for the ever-evolving world of technology and innovation.
                         I blend logical problem-solving with creative expression, exploring the intersection of
-                         computing and the arts.
+                          computing and the arts.
                     </p>
 
                     {/* Buttons & Socials Area */}
-                    <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full justify-center lg:justify-start">
+                    {/* Added gsap-reveal class */}
+                    <div className="gsap-reveal flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full justify-center lg:justify-start">
                         <a
                             href="#readMore"
                             onClick={(e) => {
@@ -137,11 +163,12 @@ function Home() {
                 </div>
 
                 {/* --- RIGHT: IMAGE --- */}
-                {/* Replaced fixed width/height with responsive classes */}
-                <div className="flex-1 flex justify-center lg:justify-end relative group lg:-translate-x-10 mt-10 lg:mt-0">
+                {/* Added gsap-image-reveal class to the container */}
+                <div className="gsap-image-reveal flex-1 flex justify-center lg:justify-end relative group lg:-translate-x-10 mt-10 lg:mt-0">
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 sm:w-[350px] sm:h-[350px] bg-[#db0a0a] blur-[60px] lg:blur-[80px] rounded-full opacity-0 group-hover:opacity-50 transition-all duration-700 ease-in-out"></div>
+                    
+                    {/* The Float Animation is INSIDE the GSAP container, so they don't fight */}
                     <div className="relative z-10 animate-[float_6s_ease-in-out_infinite]">
-                        {/* Image size is now controlled by w-64/w-80 rather than view-width (vw) */}
                         <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-[350px] lg:h-[350px] rounded-full p-2 border-2 border-[#db0a0a]/30 bg-[#080707] transition-all duration-500 group-hover:border-[#db0a0a] group-hover:scale-105">
                             <img
                                 src="./src/assets/mbj.jpg"
