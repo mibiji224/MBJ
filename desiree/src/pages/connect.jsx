@@ -65,7 +65,7 @@ const App = () => {
         // --- CONFIGURATION: YOUR KEYS ---
         const serviceId = 'service_3c1888b'; 
         const templateId = 'template_19qv3iq';
-        const publicKey = 'YLcA9TfnfUuRN0OQ3y'; 
+        const publicKey = 'lK_GRMgh_JCw5JJFG'; 
         // -------------------------------------------
 
         // Check if SDK is loaded
@@ -92,7 +92,9 @@ const App = () => {
             })
             .catch((err) => {
                 console.error('FAILED...', err);
-                setStatusMessage('❌ Failed to send message. Please check your credentials in the code.');
+                // UPDATED: Now showing the specific error message from EmailJS
+                const errorMessage = err.text || err.message || 'Unknown error occurred';
+                setStatusMessage(`❌ Error: ${errorMessage}. Please check your dashboard.`);
             })
             .finally(() => {
                 setIsSubmitting(false);
