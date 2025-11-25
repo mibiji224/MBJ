@@ -29,29 +29,18 @@ export default async function (req, res) {
     }
 
     // 3. Construct the HTML email content
-    // UPDATED: Added a dedicated "Reply" button inside the email body as a failsafe.
     const emailHtml = `
         <html>
-            <body style="font-family: sans-serif; line-height: 1.6; color: #333;">
+            <body style="font-family: sans-serif; line-height: 1.6;">
                 <h2 style="color: #db0a0a;">New Contact Form Submission</h2>
-                
-                <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
-                    <p style="margin: 0;"><strong>Name:</strong> ${name}</p>
-                    <p style="margin: 5px 0;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #db0a0a; text-decoration: none;">${email}</a></p>
-                    <p style="margin: 0;"><strong>Subject:</strong> ${subject}</p>
-                </div>
-
+                <p><strong>From:</strong> ${name} (${email})</p>
+                <p><strong>Subject:</strong> ${subject}</p>
+                <hr style="border: 0; border-top: 1px solid #ccc;">
                 <h3 style="margin-top: 20px;">Message:</h3>
-                <div style="padding: 15px; border: 1px solid #eee; background-color: #ffffff; border-radius: 8px;">
+                <div style="padding: 15px; border: 1px solid #eee; background-color: #f9f9f9; border-radius: 8px;">
                     <p style="white-space: pre-wrap;">${message}</p>
                 </div>
-
-                <!-- Fallback Reply Button: Works even if Reply-To header is stripped -->
-                <div style="margin-top: 30px; text-align: center;">
-                    <a href="mailto:${email}?subject=Re: ${subject}" style="background-color: #333; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">Reply to ${name}</a>
-                </div>
-                
-                <p style="margin-top: 30px; font-size: 0.8em; color: #777; text-align: center;">
+                <p style="margin-top: 30px; font-size: 0.8em; color: #777;">
                     This message was sent from your portfolio contact form.
                 </p>
             </body>
@@ -64,10 +53,14 @@ export default async function (req, res) {
             from: 'Your Verified Sender <onboarding@resend.dev>', 
             to: TARGET_EMAIL, 
             
-            // We keep the standard reply_to property. 
-            // Note: If this is ignored by Gmail, use the button in the body (added above).
-            // Once you verify your own domain (e.g. contact@yourname.com), this header will work 100% of the time.
-            reply_to: email, 
+            // Method A: SDK Standard property
+            reply_to: email,
+
+            // Method B: Explicit Header (The "Force" fix)
+            // This ensures strict email clients respect the reply address
+            headers: {
+                'Reply-To': email
+            },
             
             subject: `[Desiree Soronio] ${subject}`,
             html: emailHtml,
