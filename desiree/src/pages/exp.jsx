@@ -1,5 +1,16 @@
 import React from 'react';
-import { Briefcase, GraduationCap, Code, Award } from 'lucide-react';
+import { 
+    Briefcase, 
+    GraduationCap, 
+    Code, 
+    Award, 
+    Database, 
+    Layout, 
+    Server, 
+    Wrench, 
+    Palette, 
+    FileText 
+} from 'lucide-react';
 
 const About = () => {
     // DATA: Your specific details
@@ -105,34 +116,36 @@ const About = () => {
         }
     ];
 
-    // NEW SKILLS DATA
+    // UPDATED SKILLS DATA WITH ICONS AND SPAN LOGIC
     const coreSkills = [
         "Leadership", "Team Management",
         "Project Management",
         "Organizational Skills", "Time Management",
         "Communication", "Technical Writing",
         "Creative Design", "Visual Communication",
-        "Web Development", "Programming",
+        "Web Development", "Programming", "Technical Support",
+        "Customer Service", "Client Relations",
         "Marketing", "Branding Strategies",
         "Data Analysis", "Problem Solving",
         "Documentation", "Event Photography",
-        "Administrative", "Office Support"
+        "Administrative Assistance", "Office Support"
     ];
 
     const technicalSkills = [
-        { category: "Frontend", items: ["HTML", "CSS", "Tailwind CSS", "Bootstrap", "React"] },
-        { category: "Backend", items: ["JavaScript", "Python", "PHP", "Java", "Node.js", "REST API"] },
-        { category: "Database", items: ["MySQL", "MongoDB", "Firebase", "PostgreSQL"] },
-        { category: "Tech Tools", items: ["Git", "GitHub", "VSCode", "Eclipse", "NetBeans"] },
-        { category: "Creative Tools", items: ["Figma", "Adobe Photoshop", "Canva", "Blender", "Procreate", "IbisPaint", "CapCut", "Photopea", "DaVinci Resolve"] }
+        // Standard width cards (Span 1)
+        { category: "Frontend", icon: <Layout size={14} />, items: ["HTML", "CSS", "Tailwind CSS", "Bootstrap", "React"] },
+        { category: "Backend", icon: <Server size={14} />, items: ["JavaScript", "Python", "PHP", "Java", "Node.js", "REST API"] },
+        { category: "Database", icon: <Database size={14} />, items: ["MySQL", "MongoDB", "Firebase", "PostgreSQL"] },
+        { category: "Tech Tools", icon: <Wrench size={14} />, items: ["Git", "GitHub", "VSCode", "Eclipse", "NetBeans", "Xampp"] },
+        
+        // Full width cards (Span 2) - Moved here for visual balance
+        { category: "Creative Tools", icon: <Palette size={14} />, items: ["Figma", "Adobe Photoshop", "Canva", "Blender", "Procreate", "IbisPaint", "CapCut", "Photopea"], fullWidth: true },
+        { category: "Office Tools", icon: <FileText size={14} />, items: ["Google Suite", "Excel", "Word", "Google Sheets", "Google Docs", "Notion", "Slack", "Trello", "Zoom", "GMeet", "Outlook", "Loom"], fullWidth: true }
     ];
 
     return (
-        // FIXED: Used Flexbox architecture for perfect viewport fitting
-        // h-screen ensures it takes full height, overflow-hidden prevents body scroll
         <section className="bg-[#080707] text-white h-screen w-full flex flex-col py-4 px-4 lg:px-12 font-sans relative overflow-hidden" id="about">
 
-            {/* CSS for custom scrollbar */}
             <style>{`
         .modern-scrollbar::-webkit-scrollbar { width: 4px; }
         .modern-scrollbar::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
@@ -140,18 +153,15 @@ const About = () => {
         .modern-scrollbar::-webkit-scrollbar-thumb:hover { background: #ff1f1f; }
       `}</style>
 
-            {/* Main Content Container - Uses h-full to respect parent padding */}
             <div className="max-w-7xl mx-auto w-full h-full flex flex-col">
 
-                {/* Section Title - shrink-0 prevents it from squishing */}
+                {/* Section Title */}
                 <div className="shrink-0 mb-4 mt-2">
                     <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">About Me</h2>
                     <div className="w-20 h-1 bg-[#db0a0a]"></div>
                 </div>
 
-                {/* Main Grid - flex-1 min-h-0 is the MAGIC FIX. 
-                    It forces this container to take exactly the remaining height 
-                    and allows internal children to scroll independently. */}
+                {/* Main Grid */}
                 <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-10">
 
                     {/* LEFT COLUMN: EXPERIENCE */}
@@ -163,28 +173,21 @@ const About = () => {
                             <h3 className="text-xl font-bold text-gray-100">Experience</h3>
                         </div>
 
-                        {/* Scrollable Container 
-                            Added pb-6 to ensure last item has breathing room at bottom */}
                         <div className="flex-1 overflow-y-auto pr-4 modern-scrollbar bg-[#0f0f0f]/50 rounded-xl p-4 border border-white/5 pb-6">
                             <ol className="relative border-l border-neutral-800 ml-3 space-y-8">
                                 {experienceData.map((item, index) => (
                                     <li key={index} className="relative ml-8 group">
-                                        {/* Dot Indicator */}
                                         <span className="absolute -left-[43px] top-1 flex items-center justify-center w-6 h-6 bg-[#080707] rounded-full border border-neutral-700 group-hover:border-[#db0a0a] group-hover:shadow-[0_0_10px_#db0a0a] transition-all duration-300">
                                             <div className="w-2 h-2 bg-neutral-600 rounded-full group-hover:bg-[#db0a0a] transition-colors"></div>
                                         </span>
 
-                                        { /* Content Card */}
                                         <div className="relative">
                                             <div className="flex flex-wrap items-center gap-2 mb-1">
                                                 <span className="text-[10px] font-mono font-medium text-[#db0a0a] border border-[#db0a0a]/30 px-1.5 py-0.5 rounded bg-[#db0a0a]/5">
                                                     {item.date}
                                                 </span>
                                                 {item.type && (
-                                                    <span
-                                                        className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider ${item.type === 'LATEST' ? 'bg-[#db0a0a] text-white' : 'bg-white text-black'
-                                                            }`}
-                                                    >
+                                                    <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider ${item.type === 'LATEST' ? 'bg-[#db0a0a] text-white' : 'bg-white text-black'}`}>
                                                         {item.type}
                                                     </span>
                                                 )}
@@ -243,9 +246,8 @@ const About = () => {
                             </div>
                         </div>
 
-                        {/* Skills Section - Fills remaining space */}
+                        {/* Skills Section */}
                         <div className="flex-1 min-h-0 flex flex-col">
-
                             {/* Header */}
                             <div className="flex items-center gap-2 mb-2 mt-4 shrink-0">
                                 <div className="p-1.5 bg-[#db0a0a]/10 rounded-lg">
@@ -258,41 +260,49 @@ const About = () => {
                             <div className="flex-1 overflow-y-auto pr-2 modern-scrollbar pb-6">
 
                                 {/* Core Skills Group */}
-                                <div className="mb-3">
-                                    <h4 className="text-[12px] font-bold text-gray-400 uppercase tracking-widest mb-2 border-l-2 border-[#db0a0a] pl-2">
+                                <div className="mb-4">
+                                    <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                        <div className="w-1 h-1 bg-[#db0a0a] rounded-full"></div>
                                         Core Competencies
                                     </h4>
                                     <div className="flex flex-wrap gap-1.5">
                                         {coreSkills.map((skill, index) => (
-                                            <span
-                                                key={index}
-                                                // Increased text size from text-[10px] to text-xs, increased vertical padding to py-1
-                                                className="px-3 py-1 bg-[#1a1a1a] text-gray-300 text-xs font-medium rounded border border-white/5 transition-all duration-200 cursor-default hover:border-[#db0a0a] hover:text-[#db0a0a] hover:bg-[#db0a0a]/8"
-                                            >
+                                            <span key={index} className="px-2 py-1 bg-[#1a1a1a] text-gray-400 text-[10px] font-medium rounded border border-white/5 hover:text-white hover:border-[#db0a0a]/50 transition-colors cursor-default">
                                                 {skill}
                                             </span>
                                         ))}
                                     </div>
                                 </div>
 
-                                {/* Technical Skills Group */}
+                                {/* Technical Proficiency - IMPROVED LAYOUT */}
                                 <div>
-                                    <h4 className="text-[12px] font-bold text-gray-400 uppercase tracking-widest  border-l-2 border-[#db0a0a] pl-2 mb-2">
+                                    <h4 className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                                        <div className="w-1 h-1 bg-[#db0a0a] rounded-full"></div>
                                         Technical Proficiency
                                     </h4>
+                                    
+                                    {/* Bento Grid Layout */}
                                     <div className="grid grid-cols-2 gap-2">
                                         {technicalSkills.map((group, index) => (
-                                            <div key={index} className={`bg-[#0f0f0f] p-2 rounded-lg border border-white/5 hover:border-white/10 transition-colors ${index === technicalSkills.length - 1 ? 'col-span-2' : ''}`}>
-                                                {/* Increased header text size to text-xs */}
-                                                <h5 className="text-[#db0a0a] text-xs font-bold uppercase mb-1.5 tracking-wider">
-                                                    {group.category}
-                                                </h5>
-                                                <div className="flex flex-wrap gap-1">
+                                            <div 
+                                                key={index} 
+                                                // If fullWidth is true (for Creative/Office), span 2 columns
+                                                className={`bg-[#0f0f0f] p-3 rounded-lg border border-white/5 hover:border-[#db0a0a]/30 transition-colors group ${group.fullWidth ? 'col-span-2' : 'col-span-1'}`}
+                                            >
+                                                <div className="flex items-center gap-2 mb-2">
+                                                    <span className="text-[#db0a0a] opacity-80 group-hover:opacity-100 transition-opacity">
+                                                        {group.icon}
+                                                    </span>
+                                                    <h5 className="text-white text-[11px] font-bold uppercase tracking-wider">
+                                                        {group.category}
+                                                    </h5>
+                                                </div>
+                                                
+                                                <div className="flex flex-wrap gap-1.5">
                                                     {group.items.map((skill, idx) => (
                                                         <span
                                                             key={idx}
-                                                            // Increased text size to text-xs and padding to py-1
-                                                            className="text-xs text-gray-300 bg-black/50 px-2 py-1 rounded border border-white/5 transition-all duration-200 hover:text-[#db0a0a] hover:border-[#db0a0a]"
+                                                            className="text-[10px] text-gray-400 bg-black/40 px-2 py-1 rounded border border-white/5 transition-all duration-200 group-hover:border-[#db0a0a]/20 group-hover:text-gray-200"
                                                         >
                                                             {skill}
                                                         </span>

@@ -163,7 +163,7 @@ const Projects = () => {
       id: 1,
       title: "BiteTrack",
       description: "Bitetrack is a modern nutrition tracker developed with a clean UI. Users can record meals, monitor calories and macros, and view personalized progress analytics.",
-      tags: ["PHP", "TailwindCSS", "JavaScript", "MySQL"],
+      tags: ["PHP", "TailwindCSS", "JavaScript", "MySQL", "HTML", "CSS", "InfinityFree"],
       links: { demo: "https://bitetrack.page.gd/", github: "https://github.com/mibiji224/BiteTrack" },
       image: [
         "/img-bitetrack/01.jpg", "/img-bitetrack/02.jpg", "/img-bitetrack/03.jpg", "/img-bitetrack/04.jpg", "/img-bitetrack/05.jpg", "/img-bitetrack/06.jpg",
@@ -172,42 +172,66 @@ const Projects = () => {
     {
       id: 2,
       title: "Personal Portfolio",
-      description: "The first iteration of my personal website showcasing my journey.",
-      tags: ["React", "TailwindCSS", "Vite", "Node.js", "Javascipt"],
+      description: "A responsive Single Page Application (SPA) designed to showcase my multidisciplinary work. Features include interactive modals, optimized image loading, and a custom dark aesthetic.",
+      tags: ["React", "TailwindCSS", "Vite", "Node.js", "Javascipt", "Vercel", "HTML", "CSS"],
       links: { demo: "https://desireesoronio.vercel.app/", github: "https://github.com/mibiji224/Portfolio" },
       image: ["/img-drs/01.jpg", "/img-drs/02.jpg", "/img-drs/03.jpg", "/img-drs/04.jpg", "/img-drs/05.jpg"]
     },
     {
       id: 3,
-      title: "Tracker",
-      description: "The first iteration of my personal website showcasing my journey.",
-      tags: ["HTML", "CSS", "JavaScript"],
+      title: "Coming Soon...",
+      description: "A top-secret project currently under wraps. Access will be granted upon completion.",
+      tags: ["Confidential"],
       links: { demo: "#", github: "#" },
-      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=Portfolio+V1"]
+      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=Top+Secret"]
     },
     {
       id: 4,
-      title: "E-Commerce API",
-      description: "A robust backend API handling payments and inventory management.",
-      tags: ["Node.js", "Express", "MongoDB"],
+      title: "Coming Soon...",
+      description: "A top-secret project currently under wraps. Access will be granted upon completion.",
+      tags: ["Confidential"],
       links: { demo: "#", github: "#" },
-      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=E-Commerce+API"]
+      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=Top+Secret"]
     },
     {
       id: 5,
-      title: "Chat Application",
-      description: "Real-time messaging platform supporting private chats using WebSockets.",
-      tags: ["React", "Socket.io", "Redis"],
+      title: "Coming Soon...",
+      description: "A top-secret project currently under wraps. Access will be granted upon completion.",
+      tags: ["Confidential"],
       links: { demo: "#", github: "#" },
-      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=Chat+App"]
+      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=Top+Secret"]
     },
     {
       id: 6,
-      title: "Task Manager CLI",
-      description: "A command-line interface tool for managing developer tasks efficiently.",
-      tags: ["Rust", "CLI", "Shell"],
+      title: "Coming Soon...",
+      description: "A top-secret project currently under wraps. Access will be granted upon completion.",
+      tags: ["Confidential"],
       links: { demo: "#", github: "#" },
-      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=CLI+Tool"]
+      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=Top+Secret"]
+    },
+    {
+      id: 7,
+      title: "Coming Soon...",
+      description: "A top-secret project currently under wraps. Access will be granted upon completion.",
+      tags: ["Confidential"],
+      links: { demo: "#", github: "#" },
+      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=Top+Secret"]
+    },
+    {
+      id: 8,
+      title: "Coming Soon...",
+      description: "A top-secret project currently under wraps. Access will be granted upon completion.",
+      tags: ["Confidential"],
+      links: { demo: "#", github: "#" },
+      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=Top+Secret"]
+    },
+    {
+      id: 9,
+      title: "Coming Soon...",
+      description: "A top-secret project currently under wraps. Access will be granted upon completion.",
+      tags: ["Confidential"],
+      links: { demo: "#", github: "#" },
+      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=Top+Secret"]
     }
   ];
 
@@ -534,67 +558,65 @@ const artProjectsData = [
     id: "art-0",
     title: "Three Heroes Sketch",
     category: "Character Design",
-    description: "A semi-realistic character exploration focusing on neon lighting and futuristic attire.",
-    tools: "Procreate",
+    description: "Sketching the Monuments for The Greatest Heroes Art",
+    tools: "IArtbook",
     image: "/arts/0000.jpg"
   },
   {
     id: "art-1",
-    title: "Ethereal Landscapes",
-    category: "Environment Art",
-    description: "Digital painting series exploring atmospheric perspective and fantasy environments.",
-    tools: "Adobe Photoshop",
+    title: "The Greatest Heroes",
+    category: "Illustration",
+    description: "Inspired by the anime 'My Hero Academia', this piece showcases three iconic heroes in a dynamic composition.",
+    tools: "Sketchbook, iArtbook",
     image: "/arts/001.jpg"
   },
   {
     id: "art-2",
-    title: "Neon City",
-    category: "Illustration",
-    description: "Background art focusing on complex perspective and color theory.",
-    tools: "Photoshop",
+    title: "Dark Deku",
+    category: "Portrait",
+    description: "Inspired by the 'Dark Deku' arc, this piece shows the light in his eyes finally extinguished by the burden of the upcoming war.",
+    tools: "ibisPaint",
     image: "/arts/002.jpg"
   },
   {
     id: "art-3",
-    title: "The Guardian",
-    category: "Concept Art",
-    description: "Fantasy creature design for a personal world-building project.",
-    tools: "Krita",
+    title: "Katsuki",
+    category: "Portrait",
+    description: "",
+    tools: "ibisPaint",
     image: "/arts/003.jpg"
   },
   {
     id: "art-4",
-    title: "Mecha Pilot",
-    category: "Character Design",
-    description: "Suit design and helmet HUD interface concepts.",
-    tools: "Procreate",
+    title: "Fallen Angel",
+    category: "Illustration",
+    description: "Inspired by Touya's tragic backstory, this piece depicts his new identity, Dabi, in a literal fall. This symbolizes his metaphorical transformation from an innocent youth into a 'fallen angel.'",
+    tools: "iArtbook",
     image: "/arts/004.jpg"
   },
   {
     id: "art-5",
-    title: "Floating Islands",
-    category: "Environment",
-    description: "Whimsical sky islands concept art.",
-    tools: "Photoshop",
+    title: "Innocent Angel",
+    category: "Illustration",
+    description: "Inspired by Touya's tragic backstory, this piece depicts his new identity, Dabi, in a literal fall. This symbolizes his metaphorical transformation from an innocent youth into a 'fallen angel.'",
+    tools: "iArtbook",
     image: "/arts/005.jpg"
   },
   {
     id: "art-6",
-    title: "Cyber Skull",
+    title: "Dabi in the Final War",
     category: "Illustration",
-    description: "Anatomical study with cybernetic enhancements.",
-    tools: "Krita",
+    description: "Inspired by the climactic battles in My Hero Academia, this piece captures Dabi amidst the chaos of the final war, showcasing his decaying skin from constant burns almost taking over his entire body.",
+    tools: "ibisPaint",
     image: "/arts/006.jpg"
   },
 
-  // --- MANUALLY EDIT THESE ITEMS (007 - 042) ---
-
   {
     id: "art-7",
-    title: "Project Title 007",
-    category: "Category Here",
-    description: "Description for artwork 007...",
-    tools: "Tool Used",
+    title: "Doctor Katsuki",
+    category: "Illustration",
+    description: "",
+    tools: "iArtbook",
     image: "/arts/007.jpg"
   },
   {
@@ -691,15 +713,7 @@ const artProjectsData = [
     category: "Category Here",
     description: "Description for artwork 019...",
     tools: "Tool Used",
-    image: "/arts/0019.jpg"
-  },
-  {
-    id: "art-20",
-    title: "Project Title 020",
-    category: "Category Here",
-    description: "Description for artwork 020...",
-    tools: "Tool Used",
-    image: "/arts/0020.jpg"
+    image: ["/arts/0019.jpg", "/arts/0020.jpg"]
   },
   {
     id: "art-21",
