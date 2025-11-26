@@ -1,6 +1,6 @@
 import {
   ArrowLeft, ChevronLeft, ChevronRight, Code, ExternalLink,
-  GitBranch, Image as ImageIcon, Layers, Maximize2, Palette,
+  GitBranch, Image as ImageIcon, Maximize2, Palette,
   PenTool, X, Loader2
 } from 'lucide-react';
 import { useEffect, useState, useRef } from 'react';
@@ -9,7 +9,6 @@ import { useEffect, useState, useRef } from 'react';
 // 1. CUSTOM COMPONENT: SMART CAROUSEL LOADER
 // ==========================================
 const ImageWithLoader = ({ src, alt, className, containerClassName, onClick }) => {
-  // force 'src' into an array (handles both single strings and arrays)
   const images = Array.isArray(src) ? src : [src];
   const isMulti = images.length > 1;
 
@@ -17,15 +16,12 @@ const ImageWithLoader = ({ src, alt, className, containerClassName, onClick }) =
   const [currentSlide, setCurrentSlide] = useState(1);
   const scrollRef = useRef(null);
 
-  // Determine if we are still loading images
   const isLoading = loadedCount < images.length;
 
-  // Track scroll position to update "1/3" counter
   const handleScroll = () => {
     if (scrollRef.current) {
       const scrollLeft = scrollRef.current.scrollLeft;
       const width = scrollRef.current.offsetWidth;
-      // Calculate index (add 0.5 to round correctly during partial swipes)
       const index = Math.round(scrollLeft / width) + 1;
       setCurrentSlide(index);
     }
@@ -35,9 +31,8 @@ const ImageWithLoader = ({ src, alt, className, containerClassName, onClick }) =
     setLoadedCount((prev) => prev + 1);
   };
 
-  // --- NEW: ARROW NAVIGATION FUNCTIONS ---
   const scrollPrev = (e) => {
-    e.stopPropagation(); // Prevent opening modal when clicking arrow
+    e.stopPropagation();
     if (scrollRef.current) {
       const width = scrollRef.current.offsetWidth;
       scrollRef.current.scrollBy({ left: -width, behavior: 'smooth' });
@@ -45,7 +40,7 @@ const ImageWithLoader = ({ src, alt, className, containerClassName, onClick }) =
   };
 
   const scrollNext = (e) => {
-    e.stopPropagation(); // Prevent opening modal when clicking arrow
+    e.stopPropagation();
     if (scrollRef.current) {
       const width = scrollRef.current.offsetWidth;
       scrollRef.current.scrollBy({ left: width, behavior: 'smooth' });
@@ -57,45 +52,36 @@ const ImageWithLoader = ({ src, alt, className, containerClassName, onClick }) =
       className={`relative overflow-hidden bg-[#1a1a1a] group ${containerClassName}`}
       onClick={onClick}
     >
-      
-      {/* LOADER SPINNER */}
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center z-20 bg-[#1a1a1a]">
           <Loader2 className="w-8 h-8 text-[#db0a0a] animate-spin" />
         </div>
       )}
 
-      {/* --- NEW: NAVIGATION ARROWS (Only if > 1 image & Loaded) --- */}
       {isMulti && !isLoading && (
         <>
-          {/* Left Arrow */}
           <button
             onClick={scrollPrev}
             disabled={currentSlide === 1}
             className={`absolute left-2 top-1/2 -translate-y-1/2 z-30 p-1.5 rounded-full bg-black/50 text-white backdrop-blur-sm border border-white/10 transition-all duration-200 hover:bg-[#db0a0a] disabled:opacity-0 disabled:pointer-events-none opacity-0 group-hover:opacity-100`}
-            aria-label="Previous image"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
 
-          {/* Right Arrow */}
           <button
             onClick={scrollNext}
             disabled={currentSlide === images.length}
             className={`absolute right-2 top-1/2 -translate-y-1/2 z-30 p-1.5 rounded-full bg-black/50 text-white backdrop-blur-sm border border-white/10 transition-all duration-200 hover:bg-[#db0a0a] disabled:opacity-0 disabled:pointer-events-none opacity-0 group-hover:opacity-100`}
-            aria-label="Next image"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
         </>
       )}
 
-      {/* CAROUSEL CONTAINER (CSS Scroll Snap) */}
       <div 
         ref={scrollRef}
         onScroll={handleScroll}
         className={`flex w-full h-full overflow-x-auto snap-x snap-mandatory scrollbar-hide ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-700`}
-        // Inline style to hide scrollbar across browsers
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }} 
       >
         {images.map((imgSrc, index) => (
@@ -110,7 +96,6 @@ const ImageWithLoader = ({ src, alt, className, containerClassName, onClick }) =
         ))}
       </div>
 
-      {/* COUNTER BADGE (Only shows if > 1 image and finished loading) */}
       {isMulti && !isLoading && (
         <div className="absolute bottom-3 right-3 z-30 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold px-2 py-1 rounded-full border border-white/10 pointer-events-none">
           {currentSlide} / {images.length}
@@ -128,11 +113,11 @@ const Projects = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [isFullView, setIsFullView] = useState(false);
   
-  // --- PAGINATION STATE ---
+  // PAGINATION STATE
   const [currentDevPage, setCurrentDevPage] = useState(1);
   const [direction, setDirection] = useState('right');
-
-  // --- MASONRY STATE ---
+  
+  // MASONRY STATE
   const [numCols, setNumCols] = useState(2);
 
   // --- RESIZE HANDLER FOR MASONRY ---
@@ -143,12 +128,11 @@ const Projects = () => {
       else if (width >= 768) setNumCols(3);
       else setNumCols(2);
     };
-    handleResize(); // Initial check
+    handleResize(); 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // --- MASONRY DISTRIBUTOR ---
   const getDistributedColumns = (items) => {
     const columns = Array.from({ length: numCols }, () => []);
     items.forEach((item, index) => {
@@ -157,12 +141,12 @@ const Projects = () => {
     return columns;
   };
 
+  // ✅ FIXED: Set back to 3 so pagination triggers (since you have 6 items)
   const itemsPerPage = 3;
 
-  // Lock body scroll when modal is open
   useEffect(() => {
     if (selectedImage) {
-      setIsFullView(false); // Reset to card view when opening new modal
+      setIsFullView(false);
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -174,31 +158,32 @@ const Projects = () => {
   // ==========================================
   // DATA SECTIONS
   // ==========================================
-  
   const devProjects = [
     {
       id: 1,
-      title: "Student Portal Dashboard",
-      description: "A comprehensive dashboard for tracking student grades and schedules.",
-      tags: ["React", "Tailwind CSS", "Chart.js"],
-      links: { demo: "#", github: "#" },
-      image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=Student+Dashboard"
+      title: "BiteTrack",
+      description: "Bitetrack is a modern nutrition tracker developed with a clean UI. Users can record meals, monitor calories and macros, and view personalized progress analytics.",
+      tags: ["PHP", "TailwindCSS", "JavaScript", "MySQL"],
+      links: { demo: "https://bitetrack.page.gd/", github: "https://github.com/mibiji224/BiteTrack" },
+      image: [
+        "/img-bitetrack/01.jpg", "/img-bitetrack/02.jpg", "/img-bitetrack/03.jpg", "/img-bitetrack/04.jpg", "/img-bitetrack/05.jpg", "/img-bitetrack/06.jpg",
+      ]
     },
     {
       id: 2,
-      title: "Event Registration System",
-      description: "Automated registration flow for campus events with QR code generation.",
-      tags: ["Python", "Django", "PostgreSQL"],
-      links: { demo: "#", github: "#" },
-      image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=Event+System"
+      title: "Personal Portfolio",
+      description: "The first iteration of my personal website showcasing my journey.",
+      tags: ["React", "TailwindCSS", "Vite", "Node.js", "Javascipt"],
+      links: { demo: "https://desireesoronio.vercel.app/", github: "https://github.com/mibiji224/Portfolio" },
+      image: ["/img-drs/01.jpg", "/img-drs/02.jpg", "/img-drs/03.jpg", "/img-drs/04.jpg", "/img-drs/05.jpg"]
     },
     {
       id: 3,
-      title: "Personal Portfolio V1",
+      title: "Tracker",
       description: "The first iteration of my personal website showcasing my journey.",
       tags: ["HTML", "CSS", "JavaScript"],
       links: { demo: "#", github: "#" },
-      image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=Portfolio+V1"
+      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=Portfolio+V1"]
     },
     {
       id: 4,
@@ -206,7 +191,7 @@ const Projects = () => {
       description: "A robust backend API handling payments and inventory management.",
       tags: ["Node.js", "Express", "MongoDB"],
       links: { demo: "#", github: "#" },
-      image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=E-Commerce+API"
+      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=E-Commerce+API"]
     },
     {
       id: 5,
@@ -214,7 +199,7 @@ const Projects = () => {
       description: "Real-time messaging platform supporting private chats using WebSockets.",
       tags: ["React", "Socket.io", "Redis"],
       links: { demo: "#", github: "#" },
-      image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=Chat+App"
+      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=Chat+App"]
     },
     {
       id: 6,
@@ -222,57 +207,19 @@ const Projects = () => {
       description: "A command-line interface tool for managing developer tasks efficiently.",
       tags: ["Rust", "CLI", "Shell"],
       links: { demo: "#", github: "#" },
-      image: "https://placehold.co/600x400/1a1a1a/db0a0a?text=CLI+Tool"
+      image: ["https://placehold.co/600x400/1a1a1a/db0a0a?text=CLI+Tool"]
     }
   ];
 
-  const artProjects = artProjectsData; // Defined at bottom of file
+  const artProjects = artProjectsData; // Uses the data from bottom
 
-  // --- FIXED GRAPHICS DATA ---
   const graphicProjects = [
-    { 
-      title: "STEAM Empower Countdown", 
-      category: "Event Branding", 
-      tools: "Canva", 
-      image: "/graphics/01.jpg" 
-    },
-    { 
-      title: "Girl Up Davao Board Meeting", 
-      category: "Publication Material", 
-      tools: "Canva", 
-      image: "/graphics/02.jpg" 
-    },
-    { 
-      title: "Board Members of Girl Up Davao", 
-      category: "Social Media", 
-      tools: "Canva", 
-      image: "/graphics/03.jpg" 
-    },
-    { 
-      title: "Annual Report Layout", 
-      category: "Editorial", 
-      tools: "InDesign", 
-      image: "/graphics/04.png" 
-    },
-    { 
-      title: "Coffee Shop Logo", 
-      category: "Logo Design", 
-      tools: "Illustrator", 
-      image: "/graphics/05.jpg" 
-    },
-    { 
-      title: "Mobile App UI Kit", 
-      category: "UI Design", 
-      tools: "Figma", 
-      image: "/graphics/06.jpg" 
-    },
-    // ✅ THIS IS THE FIX: Using an Array [] for multiple images
-    { 
-      title: "Mobile App UI Kit v2", 
-      category: "UI Design", 
-      tools: "Figma", 
-      image: ["/graphics/07.jpg", "/graphics/08.jpg"] 
-    }
+    { title: "STEAM Empower Countdown", category: "Event Branding", tools: "Canva", image: "/graphics/01.jpg" },
+    { title: "Girl Up Davao Board Meeting", category: "Publication Material", tools: "Canva", image: "/graphics/02.jpg" },
+    { title: "Board Members of Girl Up Davao", category: "Social Media", tools: "Canva", image: "/graphics/03.jpg" },
+    { title: "Annual Report Layout", category: "Editorial", tools: "InDesign", image: "/graphics/04.png" },
+    { title: "Mobile App UI Kit", category: "UI Design", tools: "Figma", image: "/graphics/06.jpg" },
+    { title: "Mobile App UI Kit v2", category: "UI Design", tools: "Figma", image: ["/graphics/07.jpg", "/graphics/08.jpg"] }
   ];
 
   // --- Pagination Logic ---
@@ -300,11 +247,10 @@ const Projects = () => {
     }
   };
 
-
   return (
     <section className="bg-[#080707] min-h-screen text-white pt-10 pb-20 px-2 lg:px-12 font-sans" id="projects">
 
-      {/* Global Styles for Animations/Scrollbars */}
+      {/* Styles for Animations & Scrollbars */}
       <style>{`
         .modern-scrollbar::-webkit-scrollbar { width: 6px; }
         .modern-scrollbar::-webkit-scrollbar-track { background: #1a1a1a; border-radius: 4px; }
@@ -326,7 +272,6 @@ const Projects = () => {
             100% { opacity: 1; transform: rotateY(0deg) scale(1); }
         }
         
-        /* Hide scrollbar utility */
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
@@ -340,7 +285,6 @@ const Projects = () => {
             <div className="w-20 h-1 bg-[#db0a0a]"></div>
           </div>
 
-          {/* --- TABS --- */}
           <div className="bg-[#1a1a1a] p-1.5 rounded-xl inline-flex flex-wrap gap-1 border border-white/5">
             {['dev', 'art', 'graphics'].map((tab) => (
               <button
@@ -363,6 +307,7 @@ const Projects = () => {
         {/* --- DEVELOPMENT TAB --- */}
         {activeTab === 'dev' && (
           <div className="overflow-hidden min-h-[500px] perspective-1000">
+            {/* The Grid of Projects */}
             <div 
                 key={currentDevPage}
                 className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8 ${direction === 'right' ? 'flip-enter-next' : 'flip-enter-prev'}`}
@@ -370,13 +315,14 @@ const Projects = () => {
               {currentDevProjects.map((project, index) => (
                 <div 
                     key={project.id} 
+                    onClick={() => setSelectedImage(project)}
                     style={{ animationDelay: `${index * 150}ms` }}
-                    className="group bg-[#0f0f0f] border border-white/5 rounded-2xl overflow-hidden hover:border-[#db0a0a]/50 transition-all duration-300 hover:-translate-y-2 stagger-enter animate-in fade-in zoom-in-95 duration-500"
+                    className="group bg-[#0f0f0f] border border-white/5 rounded-2xl overflow-hidden hover:border-[#db0a0a]/50 transition-all duration-300 hover:-translate-y-2 stagger-enter animate-in fade-in zoom-in-95 duration-500 cursor-pointer"
                 >
                   <div className="h-48 overflow-hidden relative">
                     <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] to-transparent z-10 opacity-60 pointer-events-none"></div>
                     
-                    {/* Reusing the Smart Component here too */}
+                    {/* Carousel within the card */}
                     <ImageWithLoader
                       src={project.image}
                       alt={project.title}
@@ -384,10 +330,11 @@ const Projects = () => {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
 
-                    <div className="absolute top-4 right-4 z-20 p-2 bg-black/50 backdrop-blur-md rounded-lg border border-white/10">
-                      <Layers className="w-4 h-4 text-[#db0a0a]" />
+                    <div className="absolute top-4 right-4 z-20 p-2 bg-black/50 backdrop-blur-md rounded-lg border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Maximize2 className="w-4 h-4 text-[#db0a0a]" />
                     </div>
                   </div>
+                  
                   <div className="p-6">
                     <h3 className="text-xl font-bold text-white mb-2 group-hover:text-[#db0a0a] transition-colors">{project.title}</h3>
                     <p className="text-gray-400 text-sm mb-4 line-clamp-2">{project.description}</p>
@@ -397,24 +344,25 @@ const Projects = () => {
                       ))}
                     </div>
                     <div className="flex gap-4 pt-4 border-t border-white/5">
-                      <a href={project.links.github} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"><GitBranch className="w-4 h-4" /> Code</a>
-                      <a href={project.links.demo} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors"><ExternalLink className="w-4 h-4" /> Live Demo</a>
+                      <span className="flex items-center gap-2 text-sm text-gray-400 group-hover:text-white transition-colors"><GitBranch className="w-4 h-4" /> Details</span>
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Pagination Controls */}
+            {/* Pagination Controls - Visible because totalDevPages > 1 */}
             <div className="flex justify-center items-center gap-2 mt-8">
               <button onClick={prevPage} disabled={currentDevPage === 1} className={`flex items-center justify-center w-10 h-10 rounded-lg border border-white/5 transition-all ${currentDevPage === 1 ? 'text-gray-600 cursor-not-allowed bg-[#1a1a1a]' : 'text-gray-300 bg-[#1a1a1a] hover:bg-white/5 hover:text-white'}`}>
                 <ChevronLeft className="w-5 h-5" />
               </button>
+              
               {[...Array(totalDevPages)].map((_, i) => (
                 <button key={i} onClick={() => paginate(i + 1)} className={`w-10 h-10 rounded-lg text-sm font-medium border transition-all ${currentDevPage === i + 1 ? 'bg-[#db0a0a] border-[#db0a0a] text-white scale-110' : 'bg-[#1a1a1a] border-white/5 text-gray-300 hover:bg-white/5 hover:text-white'}`}>
                   {i + 1}
                 </button>
               ))}
+              
               <button onClick={nextPage} disabled={currentDevPage === totalDevPages} className={`flex items-center justify-center w-10 h-10 rounded-lg border border-white/5 transition-all ${currentDevPage === totalDevPages ? 'text-gray-600 cursor-not-allowed bg-[#1a1a1a]' : 'text-gray-300 bg-[#1a1a1a] hover:bg-white/5 hover:text-white'}`}>
                 <ChevronRight className="w-5 h-5" />
               </button>
@@ -426,8 +374,6 @@ const Projects = () => {
         {(activeTab === 'art' || activeTab === 'graphics') && (
           <div className="h-[800px] overflow-y-auto modern-scrollbar pr-2">
             <div className="flex gap-4 items-start animate-in fade-in slide-in-from-bottom-4 duration-500 pb-8">
-              
-              {/* Distribute items into buckets based on screen size */}
               {getDistributedColumns(activeTab === 'art' ? artProjects : graphicProjects).map((columnItems, colIndex) => (
                 <div key={colIndex} className="flex-1 flex flex-col gap-4">
                   {columnItems.map((item, index) => (
@@ -436,17 +382,12 @@ const Projects = () => {
                       onClick={() => setSelectedImage(item)}
                       className="group relative overflow-hidden rounded-xl bg-[#0f0f0f] border border-white/5 cursor-pointer"
                     >
-                      {/* SMART COMPONENT USAGE:
-                         Even in the small masonry card, if 'item.image' is an array, 
-                         the user can swipe it!
-                      */}
                       <ImageWithLoader
                         src={item.image}
                         alt={item.title}
                         className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-700"
                         containerClassName="w-full h-full"
                       />
-
                       <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 z-20 pointer-events-none">
                         <span className="text-[#db0a0a] text-[10px] font-bold uppercase tracking-wider mb-1">{item.category}</span>
                         <h3 className="text-sm font-bold text-white mb-1 leading-tight">{item.title}</h3>
@@ -488,10 +429,8 @@ const Projects = () => {
             </button>
 
             {isFullView ? (
-              /* --- FULL SCREEN MODE --- */
               <div className="relative w-full h-full flex flex-col">
                 <div className="flex-1 bg-black flex items-center justify-center overflow-hidden p-2">
-                  {/* Reusing Smart Component: Pass 'object-contain' so full image fits */}
                   <ImageWithLoader
                     src={selectedImage.image}
                     alt={selectedImage.title}
@@ -510,40 +449,66 @@ const Projects = () => {
                 </div>
               </div>
             ) : (
-              /* --- CARD DETAILS MODE --- */
               <>
                 <div className="relative h-64 w-full overflow-hidden bg-black group">
-                  {/* Reusing Smart Component */}
                   <ImageWithLoader
                     src={selectedImage.image}
                     alt={selectedImage.title}
                     containerClassName="w-full h-full"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
-                  {/* Removed the hover overlay with Maximize2 icon here */}
                 </div>
 
                 <div className="p-6">
                   <span className="text-[#db0a0a] text-xs font-bold uppercase tracking-wider mb-2 block">
-                    {selectedImage.category}
+                    {selectedImage.category ? selectedImage.category : "Development"}
                   </span>
+                  
                   <h5 className="mb-2 text-2xl font-bold tracking-tight text-white leading-tight">
                     {selectedImage.title}
                   </h5>
+                  
                   <p className="mb-6 text-gray-400 text-sm leading-relaxed">
                     {selectedImage.description || "No description provided."}
                     <br />
-                    <span className="inline-block mt-3 text-xs font-mono text-gray-500 border border-white/10 px-2 py-1 rounded">
-                      Tool: {selectedImage.tools}
-                    </span>
+                    
+                    {selectedImage.tools && (
+                      <span className="inline-block mt-3 text-xs font-mono text-gray-500 border border-white/10 px-2 py-1 rounded">
+                        Tool: {selectedImage.tools}
+                      </span>
+                    )}
+
+                    {selectedImage.tags && (
+                      <div className="flex flex-wrap gap-2 mt-3">
+                         {selectedImage.tags.map((t, i) => (
+                           <span key={i} className="text-xs font-mono text-[#db0a0a] bg-[#db0a0a]/10 px-2 py-1 rounded">
+                             {t}
+                           </span>
+                         ))}
+                      </div>
+                    )}
                   </p>
-                  <button
-                    onClick={() => setIsFullView(true)}
-                    className="inline-flex items-center justify-center w-full sm:w-auto px-5 py-2.5 text-sm font-medium text-white bg-[#db0a0a] rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-900 transition-all shadow-lg hover:shadow-red-900/20"
-                  >
-                    View Image
-                    <Maximize2 className="w-4 h-4 ml-2" />
-                  </button>
+
+                  <div className="flex flex-col gap-3">
+                    <button
+                        onClick={() => setIsFullView(true)}
+                        className="inline-flex items-center justify-center w-full px-5 py-2.5 text-sm font-medium text-white bg-[#db0a0a] rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-900 transition-all shadow-lg hover:shadow-red-900/20"
+                    >
+                        View Full Image
+                        <Maximize2 className="w-4 h-4 ml-2" />
+                    </button>
+
+                    {selectedImage.links && (
+                       <div className="flex gap-2">
+                          <a href={selectedImage.links.github} target="_blank" rel="noreferrer" className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm font-bold hover:bg-white/10 transition-colors">
+                             <GitBranch className="w-4 h-4" /> Code
+                          </a>
+                          <a href={selectedImage.links.demo} target="_blank" rel="noreferrer" className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-sm font-bold hover:bg-white/10 transition-colors">
+                             <ExternalLink className="w-4 h-4" /> Demo
+                          </a>
+                       </div>
+                    )}
+                  </div>
                 </div>
               </>
             )}
@@ -556,6 +521,8 @@ const Projects = () => {
 };
 
 export default Projects;
+
+
 
 
 // ==========================================
